@@ -23,7 +23,7 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
   --master ${SPARK_MASTER}            \
   --jars ${SPARK_JARS}                \
   --py-files ${SPARK_PY_FILES}           \
-  --conf spark.sql.extensions=ai.rapids.spark.Plugin \
+  --conf spark.plugins=com.nvidia.spark.SQLPlugin \
   --conf spark.rapids.memory.gpu.pooling.enabled=false \
   --conf spark.executor.resource.gpu.amount=1 \
   --conf spark.task.resource.gpu.amount=1 \
