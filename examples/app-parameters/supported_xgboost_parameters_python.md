@@ -7,14 +7,14 @@ This is a description of all the parameters available when you are running examp
    * Please use the `camelCase`, e.g., `--treeMethod=gpu_hist`.
    * `lambda` is replaced with `lambda_`, because `lambda` is a keyword in Python.
 2. `--mainClass=[app class]`: The entry class of the application to be started. Available value is one of the below classes.
-   * ai.rapids.spark.examples.agaricus.cpu_main
-   * ai.rapids.spark.examples.agaricus.gpu_main
-   * ai.rapids.spark.examples.mortgage.cpu_main
-   * ai.rapids.spark.examples.mortgage.gpu_main
-   * ai.rapids.spark.examples.taxi.cpu_main
-   * ai.rapids.spark.examples.taxi.gpu_main
-   * ai.rapids.spark.examples.mortgage.etl_main
-   * ai.rapids.spark.examples.taxi.etl_main
+   * com.nvidia.spark.examples.agaricus.cpu_main
+   * com.nvidia.spark.examples.agaricus.gpu_main
+   * com.nvidia.spark.examples.mortgage.cpu_main
+   * com.nvidia.spark.examples.mortgage.gpu_main
+   * com.nvidia.spark.examples.taxi.cpu_main
+   * com.nvidia.spark.examples.taxi.gpu_main
+   * com.nvidia.spark.examples.mortgage.etl_main
+   * com.nvidia.spark.examples.taxi.etl_main
 3. `--format=[csv|parquet|orc]`: The format of the data for training/transforming, now only supports 'csv', 'parquet' and 'orc'. *Required*.
 4. `--mode=[all|train|transform]`. The behavior of the XGBoost application (meaning CPUMain and GPUMain), default is 'all' if not specified.
    * all: Do both training and transforming, will save model to 'modelPath' if specified

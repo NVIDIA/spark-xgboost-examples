@@ -80,9 +80,9 @@ Download spark package and set environment variable.
 
 ```
 # download the spark
-wget https://downloads.apache.org/spark/spark-3.0.0-preview2/spark-3.0.0-preview2-bin-hadoop3.2.tgz
-tar zxf spark-3.0.0-preview2-bin-hadoop3.2.tgz
-export SPARK_HOME=/your/spark/spark-3.0.0-preview2-bin-hadoop3.2
+wget https://downloads.apache.org/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
+tar zxf spark-3.0.0-bin-hadoop3.2.tgz
+export SPARK_HOME=/your/spark/spark-3.0.0-bin-hadoop3.2
 ```
 
 ##### Step 3: Download jars for S3A (optional)
@@ -101,32 +101,19 @@ wget https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.687/aws-j
 ```
 
 ##### Step 4: Start Spark Standalone
-###### Step 4.1: Create getGpusResources.sh
-
-Create getGpusResources.sh with below content. You may need to change permission of this file in order to start Spark.
-```
-#! /bin/bash
- 
-ADDRS=`nvidia-smi --query-gpu=index --format=csv,noheader | sed -e ':a' -e 'N' -e'$!ba' -e 's/\n/","/g'`
-echo {\"name\": \"gpu\", \"addresses\":[\"$ADDRS\"]}
-```
-
-Then add executable permission to this file.
-```
-chmod +x getGpusResources.sh
-```
-
-###### Step 4.2: Edit spark-defualt.conf
+###### Step 4.1: Edit spark-defualt.conf
 cd $SPARK_HOME/conf and edit spark-defaults.conf
 
 By default, thers is only spark-defaults.conf.template in $SPARK_HOME/conf, you could edit it and rename to spark-defaults.conf
+You can find getGpusResources.sh in $SPARK_HOME/examples/src/main/scripts/getGpusResources.sh
 
 ```
-spark.worker.resource.gpu.amount 1   # Must have, specify how many GPUs the worker has, Obviously, it should be <= the physical GPU number
+spark.worker.resource.gpu.amount 1
 spark.worker.resource.gpu.discoveryScript /path/to/getGpusResources.sh
 ```
+The gpu.amount should be <= the number of GPUs the worker has.
 
-###### Step 4.3: Start Spark Standalone
+###### Step 4.2: Start Spark Standalone
 Start Spark. Default master-spark-URL is spark://$HOSTNAME:7077 . 
 
 ```
@@ -139,11 +126,10 @@ $SPARK_HOME/sbin/start-slave.sh <master-spark-URL>
 **Note: The URLs of jars is still in process, this step may change in future.**
 
 URLs of jars:
-* xgboost4j:           http://gpuwa.nvidia.com/artifactory/sw-spark-maven/ai/rapids/xgboost4j_3.0/1.0.0-SNAPSHOT/
-* xgboost4j-spark: http://gpuwa.nvidia.com/artifactory/sw-spark-maven/ai/rapids/xgboost4j-spark_3.0/1.0.0-SNAPSHOT/
-* cudf:                    http://gpuwa.nvidia.com/artifactory/sw-spark-maven/ai/rapids/cudf/0.14-SNAPSHOT/
-* rapids-plugin:      http://gpuwa.nvidia.com/artifactory/sw-spark-maven/ai/rapids/rapids-4-spark/0.1-preview2-SNAPSHOT/
-* example apps:    http://gpuwa.nvidia.com/artifactory/sw-spark-maven/ai/rapids/sample_xgboost_apps/0.2.2-SNAPSHOT/
+* xgboost4j:          https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.0.0-Beta/ 
+* xgboost4j-spark:    https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.0.0-Beta/
+* cudf:               https://repo1.maven.org/maven2/ai/rapids/cudf/0.14/
+* rapids-plugin:      https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.1.0/
 
 Download latest version with wget
 
@@ -154,14 +140,16 @@ ls -l /usr/local/cuda
 
 Copy cudf and rapids-plugin jar to $SPARK_HOME/jars
 
+##### Step 2: Build spark xgboost example
+Follow the [guide](/getting-started-guides/building-sample-apps/scala.md) to build the example jar.
 
-##### Step 2: Create sample running script
+##### Step 3: Create sample running script
 Create running run.sh script with below content, make sure change the paths in it to your own. Also your aws key/secret.
 
 ```
 #!/bin/bash
 
-export SPARK_HOME=/your/path/to/spark-3.0.0-preview2-bin-hadoop3.2
+export SPARK_HOME=/your/path/to/spark-3.0.0-bin-hadoop3.2
 
 export PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH
 
@@ -175,7 +163,7 @@ export S3A_CREDS_PSW=your_aws_secret
 
 export JAR_PATH=/your/path/to/jars
 
-export JARS=$JAR_PATH/xgboost4j-spark_3.0-1.0.0.jar,$JAR_PATH/xgboost4j_3.0-1.0.0.jar
+export JARS=$JAR_PATH/xgboost4j-spark_3.0-1.0.0-Beta.jar,$JAR_PATH/xgboost4j_3.0-1.0.0-Beta.jar
 
 spark-submit --master spark://$HOSTNAME:7077 \
         --deploy-mode client \
@@ -190,13 +178,12 @@ spark-submit --master spark://$HOSTNAME:7077 \
         --conf spark.task.cpus=$NUM_EXECUTOR_CORES \
         --conf spark.sql.files.maxPartitionBytes=4294967296 \
         --conf spark.yarn.maxAppAttempts=1 \
-        --conf spark.sql.extensions=ai.rapids.spark.SQLExecPlugin \
-        --conf spark.plugins=ai.rapids.spark.SQLPlugin \
+        --conf spark.plugins=com.nvidia.spark.SQLPlugin \
         --conf spark.rapids.memory.gpu.pooling.enabled=false \
         --conf spark.executor.resource.gpu.amount=1 \
         --conf spark.task.resource.gpu.amount=1 \
         --jars $JARS \
-        --class ai.rapids.spark.examples.mortgage.GPUMain \
+        --class com.nvidia.spark.examples.mortgage.GPUMain \
         $JAR_PATH/sample_xgboost_apps-0.2.2.jar \
         -num_workers=${NUM_EXECUTORS} \
         -format=csv \

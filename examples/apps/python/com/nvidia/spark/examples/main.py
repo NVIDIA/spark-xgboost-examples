@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from com.nvidia.spark.examples.main import main
+from com.nvidia.spark.examples.utility.args import parse_arguments
+from importlib import import_module
 
-main()
+def main():
+    args, xgboost_args = parse_arguments()
+    getattr(import_module(args.mainClass), 'main')(args, xgboost_args)

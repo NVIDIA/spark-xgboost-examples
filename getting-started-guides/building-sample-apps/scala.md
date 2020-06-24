@@ -1,15 +1,15 @@
 # Build XGBoost Scala Examples
 
-Our examples rely on [cuDF](https://github.com/rapidsai/cudf) and [XGBoost](https://github.com/rapidsai/xgboost/tree/rapids-spark)
+Our examples rely on [cuDF](https://github.com/rapidsai/cudf) and [XGBoost](https://github.com/nvidia/spark-xgboost)
 
 ##### Build Process
 
-Follow these steps to build the Scala jars (Here take CUDA 10.0 as an example):
+Follow these steps to build the Scala jars (Here take CUDA 10.2 as an example):
 
 ```
-git clone https://github.com/rapidsai/spark-examples.git
-cd spark-examples/examples/apps/scala
-mvn package -Dcuda.classifier=cuda10
+git clone https://github.com/NVIDIA/spark-xgboost-examples.git
+cd spark-xgboost-examples/examples/apps/scala
+mvn package -Dcuda.classifier=cuda10-2
 ```
 
 ##### Generated Jars
@@ -24,6 +24,6 @@ The build process generates two jars:
 Classifiers:
 
 + *cuda.classifier*
-    + For CUDA 10.0 building, specify *cuda10*
     + For CUDA 10.1 building, specify *cuda10-1*
-###### NOTE: CUDA 9.2 is no longer supported.
+    + For CUDA 10.2 building, specify *cuda10-2*
+###### NOTE: CUDA 10.0 is no longer supported.
