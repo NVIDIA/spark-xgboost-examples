@@ -7,7 +7,7 @@ Follow these steps to package the Python zip file:
 ```
 git clone https://github.com/NVIDIA/spark-xgboost-examples.git
 cd spark-xgboost-examples/examples/apps/python
-zip -r samples.zip ai
+zip -r samples.zip com
 ```
 
 ##### Files Required by PySpark
