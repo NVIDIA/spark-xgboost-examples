@@ -92,7 +92,7 @@ Run spark-submit:
 
 ```
 ${SPARK_HOME}/bin/spark-submit                                                  \
- --conf spark.sql.extensions=ai.rapids.spark.Plugin \
+ --conf spark.plugins=com.nvidia.spark.SQLPlugin \
  --conf spark.rapids.memory.gpu.pooling.enabled=false \
  --conf spark.executor.resource.gpu.amount=1 \
  --conf spark.task.resource.gpu.amount=1 \

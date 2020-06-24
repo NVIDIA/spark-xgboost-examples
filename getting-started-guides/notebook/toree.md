@@ -26,7 +26,7 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
   --toree_opts='--nosparkcontext'                         \
   --kernel_name="XGBoost4j-Spark"                         \
   --spark_opts='--master ${SPARK_MASTER} --jars ${SPARK_JARS}       \
-    --conf spark.sql.extensions=ai.rapids.spark.Plugin \
+    --conf spark.plugins=com.nvidia.spark.SQLPlugin \
     --conf spark.rapids.memory.gpu.pooling.enabled=false \
     --conf spark.executor.resource.gpu.amount=1 \
     --conf spark.task.resource.gpu.amount=1 \
