@@ -251,7 +251,7 @@ ${SPARK_HOME}/bin/spark-submit                                                  
  --mainClass=${EXAMPLE_CLASS}                                                   \
  --dataPath=train::${DATA_PATH}/mortgage/out/train/       \
  --dataPath=trans::${DATA_PATH}/mortgage/out/eval/         \
- --format=csv                                                                   \
+ --format=parquet                                                               \
  --numWorkers=${SPARK_NUM_EXECUTORS}                                            \
  --treeMethod=${TREE_METHOD}                                                    \
  --numRound=100                                                                 \
