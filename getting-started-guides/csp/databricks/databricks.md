@@ -4,13 +4,13 @@ This is a getting started guide to XGBoost4J-Spark on Databricks. At the end of 
 
 Prerequisites
 -------------
-* Apache Spark 2.4+ running in DataBricks Runtime 5.3 ML with GPU, 5.4 ML with GPU, or 5.5 ML with GPU.  Make sure it matches the hardware and software requirements below.
+* Apache Spark 3.0+ running in DataBricks Runtime 7.0 ML with GPU.  Make sure it matches the hardware and software requirements below.
 * Hardware Requirements
   * NVIDIA Pascal™ GPU architecture or better
   * Multi-node clusters with homogenous GPU configuration
 * Software Requirements
   * Ubuntu 16.04/CentOS
-  * CUDA V10.1/10.0/9.2
+  * CUDA V10.2/10.1
   * NVIDIA driver compatible with your CUDA
   * NCCL 2.4.7
 
@@ -19,19 +19,18 @@ The number of GPUs per node dictates the number of Spark executors that can run 
 Start A Databricks Cluster
 --------------------------
 Create a Databricks cluster (`Clusters` -> `+ Create Cluster`) that meets the above prerequisites.
-1. Make sure to use one of the 5.3 ML with GPU, 5.4 ML with GPU, or 5.5 LTS ML with GPU Databricks runtimes.  
+1. Make sure to use the 7.0 ML with GPU Databricks runtime.
 2. Use nodes with 1 GPU each such as p3.xlarge or Standard\_NC6s\_v3. We currently don't support nodes with multiple GPUs.  p2 (AWS) and NC12/24 (Azure) nodes do not meet the architecture requirements for the XGBoost worker (although they can be used for the driver node).  
 3. Under Autopilot Options, disable autoscaling.
 4. Choose the number of workers that matches the number of GPUs you want to use.
 5. Select a worker type that has 1 GPU for the worker like p3.xlarge or NC6s_v3, for example.
 
 
-* After you start a Databricks cluster, use the initialization notebooks -- [5.3 & 5.4 notebook](/getting-started-guides/csp/databricks/init-notebook-for-rapids-spark-xgboost-on-databricks-gpu-5.3-5.4.ipynb
-) or [5.5 notebook](/getting-started-guides/csp/databricks/init-notebook-for-rapids-spark-xgboost-on-databricks-gpu-5.5.ipynb
+* After you start a Databricks cluster, use the initialization notebooks -- [7.0 notebook](/getting-started-guides/csp/databricks/init-notebook-for-rapids-spark-xgboost-on-databricks-gpu-7.0-ml.ipynb
 ) to setup execution.<br/>
 
 The initialization notebooks will perform the following steps:<br/>
-1.Downloading the CUDA and Rapids XGBoost4j Spark jars<br/>
+1.Downloading the CUDA, Rapids-4-spark and Rapids XGBoost4j Spark jars<br/>
 2.Creating a new directory for initialization script in Databricks file system (DBFS)<br/>
 3.Creating an initialization script inside the new directory to copy jars inside Databricks jar directory<br/>
 4.Download and decompress the Sample Mortgage Notebook dataset<br/>
@@ -48,7 +47,7 @@ Add cluster initialization script
 Install the xgboost4j_spark jar in the cluster
 ---------------------------
 1. See [Libraries](https://docs.databricks.com/user-guide/libraries.html) for how to install jars from DBFS
-2. Go to "Libraries" tab under your cluster and install dbfs:/FileStore/jars/xgboost4j-spark_2.11-1.0.0-Beta2.jar in your cluster by selecting the "DBFS" option for installing jars
+2. Go to "Libraries" tab under your cluster and install dbfs:/FileStore/jars/xgboost4j-spark_3.0-1.0.0-Beta.jar in your cluster by selecting the "DBFS" option for installing jars
 
 These steps will ensure you have a GPU Cluster ready for importing XGBoost notebooks or create your own XGBoost Application for training.
 
