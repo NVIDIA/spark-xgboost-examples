@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ai.rapids</groupId>
+    <groupId>com.nvidia</groupId>
     <artifactId>sample_xgboost_apps</artifactId>
 
     <packaging>jar</packaging>
@@ -13,25 +13,17 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <xgboost.version>1.0.0-SNAPSHOT</xgboost.version>
-        <cudf.version>0.13-SNAPSHOT</cudf.version>
-        <spark.version>3.0.0-preview2</spark.version>
+        <xgboost.version>1.0.0-Beta</xgboost.version>
+        <cudf.version>0.14</cudf.version>
+        <spark.version>3.0.0</spark.version>
         <scala.version>2.12.8</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
-        <cuda.classifier></cuda.classifier>
+        <cuda.classifier>cuda10-1</cuda.classifier>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>spark.sw.nvidia.com</id>
-            <name>sw-spark-maven</name>
-            <url>https://gpuwa.nvidia.com/artifactory/sw-spark-maven</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>ai.rapids</groupId>
+            <groupId>com.nvidia</groupId>
             <artifactId>xgboost4j_3.0</artifactId>
             <version>${xgboost.version}</version>
         </dependency>
@@ -42,7 +34,7 @@
             <classifier>${cuda.classifier}</classifier>
         </dependency>
         <dependency>
-            <groupId>ai.rapids</groupId>
+            <groupId>com.nvidia</groupId>
             <artifactId>xgboost4j-spark_3.0</artifactId>
             <version>${xgboost.version}</version>
         </dependency>

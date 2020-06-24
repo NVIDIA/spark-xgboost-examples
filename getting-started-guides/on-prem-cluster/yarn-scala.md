@@ -4,38 +4,25 @@ This is a getting started guide to XGBoost4J-Spark on Apache Hadoop YARN support
 
 Prerequisites
 -------------
-* Apache Spark 3.0+ running on YARN supporting GPU scheduling. (e.g.: Spark 3.0-preview2, Hadoop-Yarn 3.1.0)
+* Apache Spark 3.0+ running on YARN supporting GPU scheduling. (e.g.: Spark 3.0, Hadoop-Yarn 3.1.0)
 * Hardware Requirements
   * NVIDIA Pascal™ GPU architecture or better
   * Multi-node clusters with homogenous GPU configuration
 * Software Requirements
   * Ubuntu 16.04/CentOS7
-  * CUDA V10.1/10.0   （CUDA 9.2 is no longer supported）
+  * CUDA V10.1/10.2   （CUDA 10.0 is no longer supported）
   * NVIDIA driver compatible with your CUDA
   * NCCL 2.4.7
-* `EXCLUSIVE_PROCESS` must be set for all GPUs in each NodeManager. This can be accomplished using the `nvidia-smi` utility:
 
-  ```
-  nvidia-smi -i [gpu index] -c EXCLUSIVE_PROCESS
-  ```
-  
-  For example:
-  
-  ```
-  nvidia-smi -i 0 -c EXCLUSIVE_PROCESS
-  ```
-  
-  Sets `EXCLUSIVE_PROCESS` for GPU _0_.
 * The number of GPUs per NodeManager dictates the number of Spark executors that can run in that NodeManager. Additionally, cores per Spark executor and cores per Spark task must match, such that each executor can run 1 task at any given time. For example: if each NodeManager has 4 GPUs, there should be 4 or less executors running on each NodeManager, and each executor should run 1 task (e.g.: A total of 4 tasks running on 4 GPUs). In order to achieve this, you may need to adjust `spark.task.cpus` and `spark.executor.cores` to match (both set to 1 by default). Additionally, we recommend adjusting `executor-memory` to divide host memory evenly amongst the number of GPUs in each NodeManager, such that Spark will schedule as many executors as there are GPUs in each NodeManager.
 * The `SPARK_HOME` environment variable is assumed to point to the cluster's Apache Spark installation.
 * Enable GPU scheduling and isolation in Hadoop Yarn on each host. Please refe to [here](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html) for more details.
 
 Get Jars and Dataset
 -------------------------------
-#### Please contact [contributors](https://github.com/rapidsai/spark-examples/graphs/contributors) for these jars now, since they have not been released yet.
 1. Application Jar: Please build the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
-2. Rapids Plugin Jar: You can download it from [here](TBD)
-3. Dataset: https://rapidsai-data.s3.us-east-2.amazonaws.com/spark/mortgage.zip
+2. Rapids Plugin Jar: You can download it from [*rapids-4-spark_2.12-0.1.0.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.1.0/)
+3. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
 
 First place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory. 
 
@@ -43,7 +30,7 @@ First place the required jar and dataset in a local directory. In this example t
 [xgboost4j_spark]$ find . -type f -print|sort
 ./data/mortgage/csv/test/mortgage_eval_merged.csv
 ./data/mortgage/csv/train/mortgage_train_merged.csv
-./jars/rapids-4-spark-1.0-preview2.jar
+./jars/rapids-4-spark_2.12-0.1.0.jar
 ./jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 ``` 
 
@@ -60,7 +47,7 @@ Verify that the jar and dataset are in HDFS:
 [xgboost4j_spark]$ hadoop fs -find /tmp/xgboost4j_spark -print|grep "\."|sort
 /tmp/xgboost4j_spark/data/mortgage/csv/test/mortgage_eval_merged.csv
 /tmp/xgboost4j_spark/data/mortgage/csv/train/mortgage_train_merged.csv
-/tmp/xgboost4j_spark/jars/rapids-4-spark-1.0-preview2.jar
+/tmp/xgboost4j_spark/jars/rapids-4-spark_2.12-0.1.0.jar
 /tmp/xgboost4j_spark/jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 ```
 
@@ -89,13 +76,13 @@ export SPARK_DRIVER_MEMORY=4g
 export SPARK_EXECUTOR_MEMORY=8g
 
 # example class to use
-export EXAMPLE_CLASS=ai.rapids.spark.examples.mortgage.GPUMain
+export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.GPUMain
 
 # XGBoost4J example jar
 export JAR_EXAMPLE=${JARS_PATH}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 
 # Rapids plugin jar, working as the sql plugin on Spark3.0
-export JAR_RAPIDS=${JARS_PATH}/rapids-4-spark-1.0-preview2.jar
+export JAR_RAPIDS=${JARS_PATH}/rapids-4-spark_2.12-0.1.0.jar
 
 # tree construction algorithm
 export TREE_METHOD=gpu_hist
@@ -150,7 +137,7 @@ If you are running this example after running the GPU example above, please set 
 
 ```
 # example class to use
-export EXAMPLE_CLASS=ai.rapids.spark.examples.mortgage.CPUMain
+export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.CPUMain
 
 # tree construction algorithm
 export TREE_METHOD=hist
@@ -179,7 +166,7 @@ export SPARK_DRIVER_MEMORY=4g
 export SPARK_EXECUTOR_MEMORY=8g
 
 # example class to use
-export EXAMPLE_CLASS=ai.rapids.spark.examples.mortgage.CPUMain
+export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.CPUMain
 
 # XGBoost4J example jar
 export JAR_EXAMPLE=${JARS_PATH}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
