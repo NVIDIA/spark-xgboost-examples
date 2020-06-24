@@ -15,7 +15,7 @@ You can get a small size datasets for each example in the [datasets](/datasets) 
 - Building applications
     - [Scala](/getting-started-guides/building-sample-apps/scala.md)
     - [Python](/getting-started-guides/building-sample-apps/python.md)
-- Getting started on on-premises clusters
+- Getting started on on-primises clusters
     - [Standalone cluster for Scala](/getting-started-guides/on-prem-cluster/standalone-scala.md)
     - [Standalone cluster for Python](/getting-started-guides/on-prem-cluster/standalone-python.md)
     - [YARN for Scala](/getting-started-guides/on-prem-cluster/yarn-scala.md)
@@ -23,10 +23,8 @@ You can get a small size datasets for each example in the [datasets](/datasets) 
     - [Kubernetes](/getting-started-guides/on-prem-cluster/kubernetes.md)
 - Getting started on cloud service providers
     - Amazon AWS
-        - [EMR](/getting-started-guides/csp/aws/emr.md)
-        - [SageMaker](/getting-started-guides/csp/aws/sagemaker.md)
+        - [EC2](/getting-started-guides/csp/aws/ec2.md)
     - [Databricks](/getting-started-guides/csp/databricks/databricks.md)
-    - [Google Cloud Platform](/getting-started-guides/csp/gcp/gcp.md)
 - Getting started for Jupyter Notebook applications
     - [Apache Toree Notebook for Scala](/getting-started-guides/notebook/toree.md)
     - [Jupyter Notebook for Python](/getting-started-guides/notebook/python-notebook.md)
@@ -37,11 +35,6 @@ These examples use default parameters for demo purposes. For a full list please 
 
 - [Scala API](/api-docs/scala.md)
 - [Python API](/api-docs/python.md)
-
-### Advanced Topics
-
-- [Multi-GPU configuration](/advanced-topics/multi-gpu.md)
-- [Performance tuning](/advanced-topics/performance_tuning.md)
 
 ### Contact Us
 
