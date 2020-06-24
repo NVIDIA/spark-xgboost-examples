@@ -13,21 +13,13 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <xgboost.version>1.0.0-SNAPSHOT</xgboost.version>
+        <xgboost.version>1.0.0-Beta</xgboost.version>
         <cudf.version>0.14</cudf.version>
         <spark.version>3.0.0</spark.version>
         <scala.version>2.12.8</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
         <cuda.classifier>cuda10-1</cuda.classifier>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>snapshots</id>
-            <name>sw-spark-maven</name>
-            <url>https://urm.nvidia.com:443/artifactory/sw-spark-maven</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
