@@ -25,8 +25,8 @@ Get Application Files, Jar and Dataset
 1. *samples.zip* and *main.py*: Please build the files by following the [guide](/getting-started-guides/building-sample-apps/python.md)
 2. Jars: Please download the following jars:
     * [*cudf-0.14-cuda10-2.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.14/) for CUDA 10.2 (Here take CUDA 10.2 as an example) or [*cudf-0.14-cuda10-1.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.14/) for CUDA 10.1
-    * [*xgboost4j_3.0-1.0.0-Beta.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.0.0-Beta/)
-    * [*xgboost4j-spark_3.0-1.0.0-Beta.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.0.0-Beta/)
+    * [*xgboost4j_3.0-1.0.0-0.1.0.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.0.0-0.1.0/)
+    * [*xgboost4j-spark_3.0-1.0.0-0.1.0.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.0.0-0.1.0/)
     * [*rapids-4-spark_2.12-0.1.0.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.1.0/)
 3. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data
 
@@ -40,8 +40,8 @@ Place dataset and other files in a local directory. In this example the dataset 
 ./libs/main.py
 ./libs/rapids-4-spark_2.12-0.1.0.jar
 ./libs/samples.zip
-./libs/xgboost4j_3.0-1.0.0-Beta.jar
-./libs/xgboost4j-spark_3.0-1.0.0-Beta.jar
+./libs/xgboost4j_3.0-1.0.0-0.1.0.jar
+./libs/xgboost4j-spark_3.0-1.0.0-0.1.0.jar
 ```
 
 Create a directory in HDFS, and copy:
@@ -61,8 +61,8 @@ Verify that the jar and dataset are in HDFS:
 /tmp/xgboost4j_spark_python/libs/main.py
 /tmp/xgboost4j_spark_python/libs/rapids-4-spark_2.12-0.1.0.jar
 /tmp/xgboost4j_spark_python/libs/samples.zip
-/tmp/xgboost4j_spark_python/libs/xgboost4j_3.0-1.0.0-Beta.jar
-/tmp/xgboost4j_spark_python/libs/xgboost4j-spark_3.0-1.0.0-Beta.jar
+/tmp/xgboost4j_spark_python/libs/xgboost4j_3.0-1.0.0-0.1.0.jar
+/tmp/xgboost4j_spark_python/libs/xgboost4j-spark_3.0-1.0.0-0.1.0.jar
 ```
 
 Launch Mortgage ETL Example
@@ -131,13 +131,13 @@ export SPARK_PYTHON_ENTRYPOINT=${LIBS_PATH}/main.py
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.gpu_main
 
 # additional jars for XGBoost4J example
-export SPARK_JARS=${LIBS_PATH}/cudf-0.14-cuda10-2.jar,${LIBS_PATH}/xgboost4j_3.0-1.0.0-Beta.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-Beta.jar
+export SPARK_JARS=${LIBS_PATH}/cudf-0.14-cuda10-2.jar,${LIBS_PATH}/xgboost4j_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-0.1.0.jar
 
 # Rapids plugin jar, working as the sql plugin on Spark3.0
 export JAR_RAPIDS=${LIBS_PATH}/rapids-4-spark_2.12-0.1.0.jar
 
 # additional Python files for XGBoost4J example
-export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-Beta.jar,${LIBS_PATH}/samples.zip
+export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/samples.zip
 
 # tree construction algorithm
 export TREE_METHOD=gpu_hist
@@ -227,10 +227,10 @@ export SPARK_PYTHON_ENTRYPOINT=${LIBS_PATH}/main.py
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.cpu_main
 
 # additional jars for XGBoost4J example
-export SPARK_JARS=${LIBS_PATH}/cudf-0.14-cuda10-2.jar,${LIBS_PATH}/xgboost4j_3.0-1.0.0-Beta.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-Beta.jar
+export SPARK_JARS=${LIBS_PATH}/cudf-0.14-cuda10-2.jar,${LIBS_PATH}/xgboost4j_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-0.1.0.jar
 
 # additional Python files for XGBoost4J example
-export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-Beta.jar,${LIBS_PATH}/samples.zip
+export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/samples.zip
 
 # tree construction algorithm
 export TREE_METHOD=hist
