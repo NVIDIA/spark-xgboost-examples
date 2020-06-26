@@ -11,8 +11,8 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
 2. Make sure you have `SPARK_JARS` and `SPARK_PY_FILES` set properly. Please note, here *cudf-0.13-cuda10.jar* is used as an example. Please choose other *cudf-0.13* jars based on your environment. You may need to update these env variables because the working directory will be changed:
   ```
   export LIBS_PATH=[full path to xgboost4j_spark/libs]
-  export SPARK_JARS=${LIBS_PATH}/cudf-0.13-cuda10.jar,${LIBS_PATH}/xgboost4j_3.0-1.0.0-Beta.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-Beta.jar,${LIBS_PATH}/rapids-4-spark-1.0-preview2.jar
-  export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-Beta.jar,${LIBS_PATH}/samples.zip
+  export SPARK_JARS=${LIBS_PATH}/cudf-0.13-cuda10.jar,${LIBS_PATH}/xgboost4j_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/rapids-4-spark-1.0-preview2.jar
+  export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.0.0-0.1.0.jar,${LIBS_PATH}/samples.zip
   ```
 
 3. Go to the project root directory and launch the notebook:
