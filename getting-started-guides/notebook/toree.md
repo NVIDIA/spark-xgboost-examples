@@ -6,12 +6,18 @@ Before you begin, please ensure that you have setup a [Spark Standalone Cluster]
 
 It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are defined and point to the master spark URL (e.g. `spark://localhost:7077`), and the home directory for Apache Spark respectively.
 
-#### Please contact [contributors](https://github.com/rapidsai/spark-examples/graphs/contributors) for the toree package now.
 1. Make sure you have jupyter notebook installed first.
-2. Download the 'toree' built against scala2.12 from [here](TBD) to local, and install it.
+2. Build the 'toree' locally to support scala 2.12, and install it.
   ```
+  # Clone the source code
+  git clone --recursive git@github.com:firestarman/incubator-toree.git -b for-scala-2.12
+
+  # Build the Toree pip package. You can change "BASE_VERSION" to any version since it is used locally only.
+  cd incubator-toree
+  env BASE_VERSION=0.5.0 make pip-release
+
   # Install Toree
-  pip install <local_path_toree>/toree-pip-0.5-SNAPSHOT.tar.gz
+  pip install dist/toree-pip/toree-0.5.0.tar.gz
   ```
 
 3. Install a new kernel configured for our example and with gpu enabled:
@@ -26,7 +32,7 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
   --toree_opts='--nosparkcontext'                         \
   --kernel_name="XGBoost4j-Spark"                         \
   --spark_opts='--master ${SPARK_MASTER} --jars ${SPARK_JARS}       \
-    --conf spark.plugins=com.nvidia.spark.SQLPlugin \
+    --conf spark.sql.extensions=com.nvidia.spark.rapids.SQLExecPlugin \
     --conf spark.rapids.memory.gpu.pooling.enabled=false \
     --conf spark.executor.resource.gpu.amount=1 \
     --conf spark.task.resource.gpu.amount=1 \
