@@ -2,13 +2,13 @@ This repo provides docs and example applications that demonstrate the RAPIDS.ai 
 
 ### Examples
 
-- Mortgage: [Scala](/examples/apps/scala/src/main/scala/ai/rapids/spark/examples/mortgage), [Python](/examples/apps/python/ai/rapids/spark/examples/mortgage)
-- Taxi: [Scala](/examples/apps/scala/src/main/scala/ai/rapids/spark/examples/taxi), [Python](/examples/apps/python/ai/rapids/spark/examples/taxi)
-- Agaricus: [Scala](/examples/apps/scala/src/main/scala/ai/rapids/spark/examples/agaricus), [Python](/examples/apps/python/ai/rapids/spark/examples/agaricus)
+- Mortgage: [Scala](/examples/apps/scala/src/main/scala/com/nvidia/spark/examples/mortgage), [Python](/examples/apps/python/com/nvidia/spark/examples/mortgage)
+- Taxi: [Scala](/examples/apps/scala/src/main/scala/com/nvidia/spark/examples/taxi), [Python](/examples/apps/python/com/nvidia/spark/examples/taxi)
+- Agaricus: [Scala](/examples/apps/scala/src/main/scala/com/nvidia/spark/examples/agaricus), [Python](/examples/apps/python/com/nvidia/spark/examples/agaricus)
 
 ### Getting Started Guides
 
-Try one of the Getting Started guides below. Please note that they target the Mortgage dataset as written, but with a few changes to `EXAMPLE_CLASS`, `trainDataPath`, and `evalDataPath`, they can be easily adapted to the Taxi or Agaricus datasets.
+Try one of the "Getting Started Guides" below. Please note that they target the Mortgage dataset as written, but with a few changes to `EXAMPLE_CLASS` and `dataPath`, they can be easily adapted to the Taxi or Agaricus datasets.
 
 You can get a small size datasets for each example in the [datasets](/datasets) folder. These datasets are only provided for convenience. In order to test for performance, please prepare a larger dataset by following [Preparing Datasets](/datasets/preparing_datasets.md). We also provide a larger dataset: [Morgage Dataset (1 GB uncompressed)](https://rapidsai-data.s3.us-east-2.amazonaws.com/spark/mortgage.zip), which is used in the guides below.
 
@@ -29,7 +29,7 @@ You can get a small size datasets for each example in the [datasets](/datasets) 
     - [Apache Toree Notebook for Scala](/getting-started-guides/notebook/toree.md)
     - [Jupyter Notebook for Python](/getting-started-guides/notebook/python-notebook.md)
 
-These examples use default parameters for demo purposes. For a full list please see Supported XGBoost Parameters for [Scala](/examples/app-parameters/supported_xgboost_parameters_scala.md) or [Python](/examples/app-parameters/supported_xgboost_parameters_python.md)
+These examples use default parameters for demo purposes. For a full list please see "Supported Parameters" for [Scala](/examples/app-parameters/supported_xgboost_parameters_scala.md) or [Python](/examples/app-parameters/supported_xgboost_parameters_python.md)
 
 ### XGBoost-Spark API
 
