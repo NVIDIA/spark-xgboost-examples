@@ -48,6 +48,14 @@ Note: the `mortgage_eval_merged.csv` and `mortgage_train_merged.csv` are not Mor
 
 Launch a Standalone Spark Cluster
 ---------------------------------
+
+0. Copy required jars to `$SPARK_HOME/jars` folder
+
+```
+cp rapids-4-spark_2.12-0.1.0.jar $SPARK_HOME/jars/
+cp cudf-0.14-cuda10-2.jar $SPARK_HOME/jars/
+```
+
 1. Start the Spark Master process:
 
 ```
@@ -76,12 +84,6 @@ Variables required to run spark-submit command:
 # path to xgboost4j_spark/libs
 export LIBS_PATH=/home/xgboost4j_spark/lib
 
-# additional jars for XGBoost4J example, use corresponding cudf jar accoding to your cuda runtime version.
-export SPARK_JARS=${LIBS_PATH}/cudf-0.14-cuda10-2.jar
-
-# Rapids plugin jar, working as the sql plugin on Spark3.0
-export JAR_RAPIDS=${LIBS_PATH}/rapids-4-spark_2.12-0.1.0.jar
-
 # Example jar built via mvn command
 export JAR_EXAMPLE=${LIBS_PATH}/sample_xgboost_apps-0.2.2.jar
 
@@ -92,21 +94,21 @@ Run spark-submit
 ${SPARK_HOME}/bin/spark-submit \
     --master spark://$HOSTNAME:7077 \
     --executor-memory 32G \
-    --jars ${SPARK_JARS},${JAR_RAPIDS}\
-    --conf spark.executor.resource.gpu.vendor=nvidia.com \
+    --conf spark.rapids.memory.gpu.pooling.enabled=false \
     --conf spark.executor.resource.gpu.amount=1 \
+    --conf spark.task.resource.gpu.amount=1 \
     -conf spark.plugins=com.nvidia.spark.SQLPlugin \
     $JAR_EXAMPLE \
-    --class=com.nvidia.spark.examples.Mortgage.ETLMain  \
-    --format=csv \
-    --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-train/" \
-    --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-train/" \
-    --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/train/"
+    --class com.nvidia.spark.examples.Mortgage.ETLMain  \
+    -format=csv \
+    -dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-train/" \
+    -dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-train/" \
+    -dataPath="out::/home/xgboost4j_spark/data/mortgage/out/train/"
 
 # if generating eval data, change the data path to eval as well as the corresponding perf-eval and acq-eval data
-# --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-eval"
-# --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-eval"
-# --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/eval/"
+# -dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-eval"
+# -dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-eval"
+# -dataPath="out::/home/xgboost4j_spark/data/mortgage/out/eval/"
 ```
 
 Launch GPU Mortgage Example
