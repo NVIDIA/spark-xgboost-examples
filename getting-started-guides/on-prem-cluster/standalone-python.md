@@ -97,6 +97,9 @@ ${SPARK_HOME}/bin/spark-submit \
     --master spark://$HOSTNAME:7077 \
     --executor-memory 32G \
     --jars ${SPARK_JARS},${JAR_RAPIDS}\
+    --conf spark.executor.resource.gpu.vendor=nvidia.com \
+    --conf spark.executor.resource.gpu.amount=1 \
+    -conf spark.plugins=com.nvidia.spark.SQLPlugin \
     main.py \
     --mainClass='com.nvidia.spark.examples.mortgage.etl_main' \
     --format=csv \
