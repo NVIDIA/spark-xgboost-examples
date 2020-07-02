@@ -10,7 +10,7 @@ This repo provides docs and example applications that demonstrate the RAPIDS.ai 
 
 Try one of the "Getting Started Guides" below. Please note that they target the Mortgage dataset as written, but with a few changes to `EXAMPLE_CLASS` and `dataPath`, they can be easily adapted to the Taxi or Agaricus datasets.
 
-You can get a small size datasets for each example in the [datasets](/datasets) folder. These datasets are only provided for convenience. In order to test for performance, please prepare a larger dataset by following [Preparing Datasets](/datasets/preparing_datasets.md). We also provide a larger dataset: [Morgage Dataset (1 GB uncompressed)](https://rapidsai-data.s3.us-east-2.amazonaws.com/spark/mortgage.zip), which is used in the guides below.
+You can get a small size datasets for each example in the [datasets](/datasets) folder. These datasets are only provided for convenience. In order to test for performance, please prepare a larger dataset by following [Preparing Datasets via Notebook](/datasets/preparing_datasets.md). We also provide a larger dataset: [Morgage Dataset (1 GB uncompressed)](https://rapidsai-data.s3.us-east-2.amazonaws.com/spark/mortgage.zip), which is used in the guides below.
 
 - Building applications
     - [Scala](/getting-started-guides/building-sample-apps/scala.md)

@@ -83,7 +83,7 @@ Variables required to run spark-submit command:
 # path to xgboost4j_spark/libs
 export LIBS_PATH=/home/xgboost4j_spark/lib
 
-# additional jars for XGBoost4J example
+# additional jars for XGBoost4J example, use corresponding cudf jar accoding to your cuda runtime version.
 export SPARK_JARS=${LIBS_PATH}/cudf-0.14-cuda10-2.jar
 
 # Rapids plugin jar, working as the sql plugin on Spark3.0
@@ -100,12 +100,14 @@ ${SPARK_HOME}/bin/spark-submit \
     main.py \
     --mainClass='com.nvidia.spark.examples.mortgage.etl_main' \
     --format=csv \
-    --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf/" \
-    --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq/" \
+    --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-train/" \
+    --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-train/" \
     --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/train/"
 
-# if generate eval data, change the data path to eval
-# --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/eval/
+# if generating eval data, change the data path to eval as well as the corresponding perf-eval and acq-eval data
+# --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-eval"
+# --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-eval"
+# --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/eval/"
 ```
 
 Launch GPU Mortgage Example
