@@ -102,7 +102,7 @@ ${SPARK_HOME}/bin/spark-submit \
     --executor-memory 32G \
     --conf spark.executor.resource.gpu.amount=1 \
     --conf spark.task.resource.gpu.amount=1 \
-    -conf spark.plugins=com.nvidia.spark.SQLPlugin \
+    --conf spark.plugins=com.nvidia.spark.SQLPlugin \
     --py-files ${SPARK_PY_FILES} \
     main.py \
     --mainClass='com.nvidia.spark.examples.mortgage.etl_main' \
