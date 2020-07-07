@@ -44,9 +44,18 @@ Place the required jar and dataset in a local directory. In this example the jar
 ./jars/rapids-4-spark_2.12-0.1.0.jar
 ./jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 ``` 
+Note: the `mortgage_eval_merged.csv` and `mortgage_train_merged.csv` are not Mortgage raw data, they are the data after Mortgage ETL job. If user wants to use a larger size Mortgage data, please refer to [Launch ETL job](#etl)
 
 Launch a Standalone Spark Cluster
 ---------------------------------
+
+0. Copy required jars to `$SPARK_HOME/jars` folder
+
+```
+cp rapids-4-spark_2.12-0.1.0.jar $SPARK_HOME/jars/
+cp cudf-0.14-cuda10-2.jar $SPARK_HOME/jars/
+```
+
 1. Start the Spark Master process:
 
 ```
@@ -65,6 +74,42 @@ ${SPARK_HOME}/sbin/start-slave.sh ${SPARK_MASTER} -c ${SPARK_CORES_PER_WORKER}
 ```
 
 Note that in this example the Master and Worker processes are both running on the same host. This is not a requirement, as long as all hosts that are used to run the Spark app have access to the dataset.
+
+<span id="etl">Launch Mortgage ETL</span>
+---------------------------
+If user wants to use a larger size dataset other than the default one, we provide an ETL app to process raw Mortgage data.
+
+Variables required to run spark-submit command:
+```
+# path to xgboost4j_spark/libs
+export LIBS_PATH=/home/xgboost4j_spark/lib
+
+# Example jar built via mvn command
+export JAR_EXAMPLE=${LIBS_PATH}/sample_xgboost_apps-0.2.2.jar
+
+```
+
+Run spark-submit
+```
+${SPARK_HOME}/bin/spark-submit \
+    --master spark://$HOSTNAME:7077 \
+    --executor-memory 32G \
+    --conf spark.rapids.memory.gpu.pooling.enabled=false \
+    --conf spark.executor.resource.gpu.amount=1 \
+    --conf spark.task.resource.gpu.amount=1 \
+    --conf spark.plugins=com.nvidia.spark.SQLPlugin \
+    $JAR_EXAMPLE \
+    --class com.nvidia.spark.examples.Mortgage.ETLMain  \
+    -format=csv \
+    -dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-train/" \
+    -dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-train/" \
+    -dataPath="out::/home/xgboost4j_spark/data/mortgage/out/train/"
+
+# if generating eval data, change the data path to eval as well as the corresponding perf-eval and acq-eval data
+# -dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-eval"
+# -dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-eval"
+# -dataPath="out::/home/xgboost4j_spark/data/mortgage/out/eval/"
+```
 
 Launch GPU Mortgage Example
 ---------------------------
