@@ -1,6 +1,6 @@
 # Get Started with GPU Accelerated Spark Using AWS EMR Notebook
 
-You can use the following step-by-step guide to run the example mortgage dataset using open source XGBoost library on Amazon EMR GPU clusters.  For more examples, please refer to https://github.com/rapidsai/spark-examples
+You can use the following step-by-step guide to run the example mortgage dataset using open source XGBoost library on Amazon EMR GPU clusters.  For more examples, please refer to https://github.com/NVIDIA/spark-xgboost-examples/tree/spark-2
 
 An EMR Notebook is a "serverless" Jupyter notebook. Unlike a traditional notebook, the contents of an EMR Notebook itself—the equations, visualizations, queries, models, code, and narrative text—are saved in Amazon S3 separately from the cluster that runs the code. This provides an EMR Notebook with durable storage, efficient access, and flexibility.
 
@@ -20,7 +20,7 @@ Go to the AWS Management Console and select the Amazon EMR service from the "Ana
 
 Once the cluster is ready, go to the Amazon EMR Notebooks, click on the Amazon Notebook instance, and click Open in Jupyter. Start the Amazon Notebook instance if it is not running.
 
-Please download this example notebook [EMR_Mortgage_Example_G4dn.ipynb](EMR_Mortgage_Example_G4dn.ipynb) from Github and upload to the Amazon EMR Notebook instance.  More Scala example code can be found [here](https://github.com/rapidsai/spark-examples/tree/master/examples/notebooks/scala).
+Please download this example notebook [EMR_Mortgage_Example_G4dn.ipynb](EMR_Mortgage_Example_G4dn.ipynb) from Github and upload to the Amazon EMR Notebook instance.  More Scala example code can be found [here](../../../examples/notebooks/scala/).
 
 Now enter the mortgage example notebook to run the GPU accelerated Apache Spark code on Open Source XGBoost library towards a small mortgage dataset on Amazon S3.  If the notebook kernel is not set to Apache Spark, please go to Kernel -> Change Kernel to set Apache Spark as the kernel. The Amazon EMR notebook is talking to the Amazon EMR cluster running Apache Spark using Apache Livy as shown in the below diagram.
 
