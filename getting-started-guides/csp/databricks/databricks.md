@@ -37,11 +37,18 @@ The initialization notebooks will perform the following steps:<br/>
 
 After executing the steps in the initialization notebook, please follow the 1. Cluster initialization script and 2. Install the xgboost4j_spark jar in the cluster to ensure it is ready for XGBoost training.
 
-Add cluster initialization script
+Add cluster initialization script and Spark Configs
 ---------------------------
 1. See [Initialization scripts](https://docs.databricks.com/user-guide/clusters/init-scripts.html) for how to configure cluster initialization scripts.
 2. Edit your cluster, adding an initialization script from dbfs:/databricks/init_scripts/init.sh in the "Advanced Options" under "Init Scripts" tab
-3. Reboot the cluster
+3. Now select the “Spark” tab, and paste the following config options into the Spark Config section. Change the config values based on the workers you choose.
+
+```
+    spark.plugins com.nvidia.spark.SQLPlugin
+    spark.rapids.memory.gpu.pooling.enabled false
+```
+
+4. Reboot the cluster
 
 
 Install the xgboost4j_spark jar in the cluster
@@ -49,7 +56,7 @@ Install the xgboost4j_spark jar in the cluster
 1. See [Libraries](https://docs.databricks.com/user-guide/libraries.html) for how to install jars from DBFS
 2. Go to "Libraries" tab under your cluster and install dbfs:/FileStore/jars/xgboost4j-spark_3.0-1.0.0-0.1.0.jar in your cluster by selecting the "DBFS" option for installing jars
 
-These steps will ensure you have a GPU Cluster ready for importing XGBoost notebooks or create your own XGBoost Application for training.
+These steps will ensure you are able to import xgboost libraries in python notebooks.
 
 
 Import the GPU Mortgage Example Notebook
@@ -104,6 +111,3 @@ Accuracy is 0.9980699597729774
 ```
 
 <sup>*</sup> The timings in this Getting Started guide are only illustrative. Please see our [release announcement](https://medium.com/rapids-ai/nvidia-gpus-and-apache-spark-one-step-closer-2d99e37ac8fd) for official benchmarks.
-
-
-
