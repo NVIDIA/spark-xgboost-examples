@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from ai.rapids.spark.encoding.criteo.common import *
-from ai.rapids.spark.encoding.utility.utils import *
+from com.nvidia.spark.encoding.criteo.common import *
+from com.nvidia.spark.encoding.utility.utils import *
 from pyspark.ml.feature import StringIndexer, StringIndexerModel
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col

@@ -16,7 +16,7 @@ popd
 
 # train target models/dicts
 spark-submit --py-files encoding.zip main.py \
-    --mainClass=ai.rapids.spark.encoding.criteo.target_cpu_main --mode=train \
+    --mainClass=com.nvidia.spark.encoding.criteo.target_cpu_main --mode=train \
     --format=csv --inputPaths=raw-1.csv,raw-2.csv \
     --labelColumn=_c0 --columns=_c34,_c35 --modelPaths=model/c34.dict,model/c35.dict
 spark-submit truncate-model.py model/c34.dict model/c34_truncated.dict
@@ -24,13 +24,13 @@ spark-submit truncate-model.py model/c35.dict model/c35_truncated.dict
 
 # train onehot models/indexers
 spark-submit --py-files encoding.zip main.py \
-    --mainClass=ai.rapids.spark.encoding.criteo.one_hot_cpu_main --mode=train \
+    --mainClass=com.nvidia.spark.encoding.criteo.one_hot_cpu_main --mode=train \
     --format=csv --inputPaths=raw-1.csv,raw-2.csv \
     --columns=_c19,_c26 --modelPaths=model/_c19,model/_c26
 
 # target encoding
 spark-submit --py-files encoding.zip main.py \
-    --mainClass=ai.rapids.spark.encoding.criteo.target_cpu_main --mode=transform \
+    --mainClass=com.nvidia.spark.encoding.criteo.target_cpu_main --mode=transform \
     --columns=_c34,_c35 --modelPaths=model/c34_truncated.dict,model/c35_truncated.dict \
     --format=csv --inputPaths=raw-1.csv,raw-2.csv,raw-3.csv --outputPaths=target-1,target-2,target-3
 
@@ -40,7 +40,7 @@ spark-submit --py-files encoding.zip main.py \
 #       "outputCol":"_c25_index","inputCol":"_c25" for file model/_c26/metadata/part-00000.
 #       This is verified on Spark 2.x.
 spark-submit --py-files encoding.zip main.py \
-    --mainClass=ai.rapids.spark.encoding.criteo.one_hot_cpu_main --mode=transform \
+    --mainClass=com.nvidia.spark.encoding.criteo.one_hot_cpu_main --mode=transform \
     --columns=_c19,_c26 --modelPaths=model/_c19,model/_c26 \
     --format=csv --inputPaths=target-1,target-2,target-3 --outputPaths=onehot-1,onehot-2,onehot-3
 

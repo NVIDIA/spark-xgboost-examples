@@ -15,8 +15,8 @@ You can find full use cases in `encoding-sample/run.sh`
 ### Application Parameters
  - mainClass: 
    
-   - `ai.rapids.spark.encoding.criteo.one_hot_cpu_main`: one-hot encoding
-   - `ai.rapids.spark.encoding.criteo.target_cpu_main`: target(mean) encoding
+   - `com.nvidia.spark.encoding.criteo.one_hot_cpu_main`: one-hot encoding
+   - `com.nvidia.spark.encoding.criteo.target_cpu_main`: target(mean) encoding
  - mode: 
    - `train`: use raw data to get encoding model
    - `transform`: use encoding moddel to convert raw data

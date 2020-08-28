@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from ai.rapids.spark.encoding.utility.args import parse_arguments
+from com.nvidia.spark.encoding.utility.args import parse_arguments
 from importlib import import_module
 
 def main():

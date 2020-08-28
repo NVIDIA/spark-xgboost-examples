@@ -25,8 +25,8 @@ def _to_str_list(literal):
     return [x for x in literal.split(',') if x]
 
 _examples = [
-    'ai.rapids.spark.encoding.criteo.one_hot_cpu_main',
-    'ai.rapids.spark.encoding.criteo.target_cpu_main'
+    'com.nvidia.spark.encoding.criteo.one_hot_cpu_main',
+    'com.nvidia.spark.encoding.criteo.target_cpu_main'
 ]
 
 def _validate_args(args):
@@ -36,7 +36,7 @@ def _validate_args(args):
     # for production:
     #     validates that --columns and --inputPaths exists
     #     validates that --inputPath and --outputPath matches for transform
-    if (args.mainClass == 'ai.rapids.spark.encoding.criteo.target_cpu_main'
+    if (args.mainClass == 'com.nvidia.spark.encoding.criteo.target_cpu_main'
             and args.mode == 'train'
             and not args.labelColumn):
         usage += '  --labelColumn required for target encoding. \n'

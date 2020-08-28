@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from ai.rapids.spark.encoding.main import main
+from com.nvidia.spark.encoding.main import main
 
 main()
