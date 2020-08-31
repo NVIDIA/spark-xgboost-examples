@@ -7,7 +7,7 @@ This tool is to convert the values from categorical type to numerical type in ce
 
 ### Usage
 1. `cd encoding/python`
-2. `zip -r sample.zip ai` to get a python encoding tool library
+2. `zip -r sample.zip com` to get a python encoding tool library
 3. submit the encoding job to your Spark host
 
 You can find full use cases in `encoding-sample/run.sh`
