@@ -126,10 +126,10 @@ $SPARK_HOME/sbin/start-slave.sh <master-spark-URL>
 **Note: The URLs of jars is still in process, this step may change in future.**
 
 URLs of jars:
-* xgboost4j:          https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.0.0-0.1.0/
-* xgboost4j-spark:    https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.0.0-0.1.0/
-* cudf:               https://repo1.maven.org/maven2/ai/rapids/cudf/0.14/
-* rapids-plugin:      https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.1.0/
+* xgboost4j:          https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.0.0-0.2.0/
+* xgboost4j-spark:    https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.0.0-0.2.0/
+* cudf:               https://repo1.maven.org/maven2/ai/rapids/cudf/0.15/
+* rapids-plugin:      https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.2.0/
 
 Download latest version with wget
 
@@ -163,7 +163,7 @@ export S3A_CREDS_PSW=your_aws_secret
 
 export JAR_PATH=/your/path/to/jars
 
-export JARS=$JAR_PATH/xgboost4j-spark_3.0-1.0.0-0.1.0.jar,$JAR_PATH/xgboost4j_3.0-1.0.0-0.1.0.jar
+export JARS=$JAR_PATH/xgboost4j-spark_3.0-1.0.0-0.2.0.jar,$JAR_PATH/xgboost4j_3.0-1.0.0-0.2.0.jar
 
 spark-submit --master spark://$HOSTNAME:7077 \
         --deploy-mode client \
