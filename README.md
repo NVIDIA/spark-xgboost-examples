@@ -36,6 +36,9 @@ These examples use default parameters for demo purposes. For a full list please 
 - [Scala API](/api-docs/scala.md)
 - [Python API](/api-docs/python.md)
 
+### Troubleshooting
+- [Trouble Shooting](/trouble-shooting/trouble-shooting.md)
+
 ### Contact Us
 
 Please see the [RAPIDS](https://rapids.ai/community.html) website for contact information.
