@@ -54,7 +54,7 @@ Add cluster initialization script and Spark Configs
 Install the xgboost4j_spark jar in the cluster
 ---------------------------
 1. See [Libraries](https://docs.databricks.com/user-guide/libraries.html) for how to install jars from DBFS
-2. Go to "Libraries" tab under your cluster and install dbfs:/FileStore/jars/xgboost4j-spark_3.0-1.0.0-0.2.0.jar in your cluster by selecting the "DBFS" option for installing jars
+2. Go to "Libraries" tab under your cluster and install dbfs:/FileStore/jars/xgboost4j-spark_3.0-1.3.0-0.1.0.jar in your cluster by selecting the "DBFS" option for installing jars
 
 These steps will ensure you are able to import xgboost libraries in python notebooks.
 

@@ -32,7 +32,7 @@ Prerequisites
 Get Jars and Dataset
 -------------------------------
 1. Application Jar: Please build the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
-2. Rapids Plugin Jar: [*rapids-4-spark_2.12-0.2.0.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.2.0/)
+2. Rapids Plugin Jar: [*rapids-4-spark_2.12-0.3.0.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.3.0/)
 3. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
 
 Place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory. 
@@ -41,7 +41,7 @@ Place the required jar and dataset in a local directory. In this example the jar
 [xgboost4j_spark]$ find . -type f -print|sort
 ./data/mortgage/csv/test/mortgage_eval_merged.csv
 ./data/mortgage/csv/train/mortgage_train_merged.csv
-./jars/rapids-4-spark_2.12-0.2.0.jar
+./jars/rapids-4-spark_2.12-0.3.0.jar
 ./jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 ``` 
 Note: the `mortgage_eval_merged.csv` and `mortgage_train_merged.csv` are not Mortgage raw data, they are the data after Mortgage ETL job. If user wants to use a larger size Mortgage data, please refer to [Launch ETL job](#etl)
@@ -52,8 +52,8 @@ Launch a Standalone Spark Cluster
 0. Copy required jars to `$SPARK_HOME/jars` folder
 
 ```
-cp rapids-4-spark_2.12-0.2.0.jar $SPARK_HOME/jars/
-cp cudf-0.15-cuda10-2.jar $SPARK_HOME/jars/
+cp rapids-4-spark_2.12-0.3.0.jar $SPARK_HOME/jars/
+cp cudf-0.17-cuda10-2.jar $SPARK_HOME/jars/
 ```
 
 1. Start the Spark Master process:
@@ -151,7 +151,7 @@ export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.GPUMain
 export JAR_EXAMPLE=${JARS_PATH}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 
 # Rapids plugin jar, working as the sql plugin on Spark3.0
-export JAR_RAPIDS=${JARS_PATH}/rapids-4-spark_2.12-0.2.0.jar
+export JAR_RAPIDS=${JARS_PATH}/rapids-4-spark_2.12-0.3.0.jar
 
 # tree construction algorithm
 export TREE_METHOD=gpu_hist

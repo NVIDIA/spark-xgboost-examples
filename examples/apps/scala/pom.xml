@@ -13,8 +13,8 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <xgboost.version>1.0.0-0.2.0</xgboost.version>
-        <cudf.version>0.15</cudf.version>
+        <xgboost.version>1.3.0-0.1.0</xgboost.version>
+        <cudf.version>0.17</cudf.version>
         <spark.version>3.0.0</spark.version>
         <scala.version>2.12.8</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
