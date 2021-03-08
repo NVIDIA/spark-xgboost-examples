@@ -12,7 +12,7 @@ Prerequisites
   * Ubuntu 16.04/CentOS7
   * CUDA V10.1/10.2   （CUDA 10.0 is no longer supported）
   * NVIDIA driver compatible with your CUDA
-  * NCCL 2.4.7
+  * NCCL 2.7.8
 
 * The number of GPUs per NodeManager dictates the number of Spark executors that can run in that NodeManager. Additionally, cores per Spark executor and cores per Spark task must match, such that each executor can run 1 task at any given time. For example: if each NodeManager has 4 GPUs, there should be 4 or less executors running on each NodeManager, and each executor should run 1 task (e.g.: A total of 4 tasks running on 4 GPUs). In order to achieve this, you may need to adjust `spark.task.cpus` and `spark.executor.cores` to match (both set to 1 by default). Additionally, we recommend adjusting `executor-memory` to divide host memory evenly amongst the number of GPUs in each NodeManager, such that Spark will schedule as many executors as there are GPUs in each NodeManager.
 * The `SPARK_HOME` environment variable is assumed to point to the cluster's Apache Spark installation.
@@ -20,47 +20,36 @@ Prerequisites
 
 Get Jars and Dataset
 -------------------------------
-1. Application Jar: Please build the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
-2. Rapids Plugin Jar: You can download it from [*rapids-4-spark_2.12-0.3.0.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.3.0/)
-3. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
 
-First place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory. 
+This guide chooses below latest jars as an example.
 
+``` bash
+export CUDF_JAR=cudf-0.18-cuda10.1.jar
+export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
+export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 ```
-[xgboost4j_spark]$ find . -type f -print|sort
-./data/mortgage/csv/test/mortgage_eval_merged.csv
-./data/mortgage/csv/train/mortgage_train_merged.csv
-./jars/rapids-4-spark_2.12-0.3.0.jar
-./jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-``` 
+
+1. Application Jar: building the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
+2. Rapids Plugin Jar: [*rapaids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
+3. Cudf jar: [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/)
+4. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
+
+Place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory.
 
 Create a directory in HDFS, and copy:
 
-```
+``` bash
 [xgboost4j_spark]$ hadoop fs -mkdir /tmp/xgboost4j_spark
 [xgboost4j_spark]$ hadoop fs -copyFromLocal * /tmp/xgboost4j_spark
-```
-
-Verify that the jar and dataset are in HDFS:
-
-```
-[xgboost4j_spark]$ hadoop fs -find /tmp/xgboost4j_spark -print|grep "\."|sort
-/tmp/xgboost4j_spark/data/mortgage/csv/test/mortgage_eval_merged.csv
-/tmp/xgboost4j_spark/data/mortgage/csv/train/mortgage_train_merged.csv
-/tmp/xgboost4j_spark/jars/rapids-4-spark_2.12-0.3.0.jar
-/tmp/xgboost4j_spark/jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
 ```
 
 Launch GPU Mortgage Example
 ---------------------------
 Variables required to run spark-submit command:
 
-```
+``` bash
 # location where data was downloaded 
 export DATA_PATH=hdfs:/tmp/xgboost4j_spark/data
-
-# location for the required jar
-export JARS_PATH=hdfs:/tmp/xgboost4j_spark/jars
 
 # spark deploy mode (see Apache Spark documentation for more information) 
 export SPARK_DEPLOY_MODE=cluster
@@ -78,19 +67,13 @@ export SPARK_EXECUTOR_MEMORY=8g
 # example class to use
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.GPUMain
 
-# XGBoost4J example jar
-export JAR_EXAMPLE=${JARS_PATH}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-
-# Rapids plugin jar, working as the sql plugin on Spark3.0
-export JAR_RAPIDS=${JARS_PATH}/rapids-4-spark_2.12-0.3.0.jar
-
 # tree construction algorithm
 export TREE_METHOD=gpu_hist
 ```
 
 Run spark-submit:
 
-```
+``` bash
 ${SPARK_HOME}/bin/spark-submit                                                  \
  --conf spark.plugins=com.nvidia.spark.SQLPlugin \
  --conf spark.rapids.memory.gpu.pooling.enabled=false \
@@ -98,14 +81,14 @@ ${SPARK_HOME}/bin/spark-submit                                                  
  --conf spark.task.resource.gpu.amount=1 \
  --conf spark.executor.resource.gpu.discoveryScript=./getGpusResources.sh \
  --files $SPARK_HOME/examples/src/main/scripts/getGpusResources.sh \
- --jars ${JAR_RAPIDS}                                           \
+ --jars ${CUDF_JAR},${RAPIDS_JAR}                                           \
  --master yarn                                                                  \
  --deploy-mode ${SPARK_DEPLOY_MODE}                                             \
  --num-executors ${SPARK_NUM_EXECUTORS}                                         \
  --driver-memory ${SPARK_DRIVER_MEMORY}                                         \
  --executor-memory ${SPARK_EXECUTOR_MEMORY}                                     \
  --class ${EXAMPLE_CLASS}                                                       \
- ${JAR_EXAMPLE}                                                                 \
+ ${SAMPLE_JAR}                                                                 \
  -dataPath=train::${DATA_PATH}/mortgage/csv/train/mortgage_train_merged.csv       \
  -dataPath=trans::${DATA_PATH}/mortgage/csv/test/mortgage_eval_merged.csv          \
  -format=csv                                                                    \
@@ -135,7 +118,7 @@ Launch CPU Mortgage Example
 ---------------------------
 If you are running this example after running the GPU example above, please set these variables, to set both training and testing to run on the CPU exclusively:
 
-```
+```bash
 # example class to use
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.CPUMain
 
@@ -145,12 +128,9 @@ export TREE_METHOD=hist
 
 This is the full variable listing, if you are running the CPU example from scratch:
 
-```
+``` bash
 # location where data was downloaded 
 export DATA_PATH=hdfs:/tmp/xgboost4j_spark/data
-
-# location where required jar was downloaded
-export JARS_PATH=hdfs:/tmp/xgboost4j_spark/jars
 
 # spark deploy mode (see Apache Spark documentation for more information) 
 export SPARK_DEPLOY_MODE=cluster
@@ -168,16 +148,13 @@ export SPARK_EXECUTOR_MEMORY=8g
 # example class to use
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.CPUMain
 
-# XGBoost4J example jar
-export JAR_EXAMPLE=${JARS_PATH}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-
 # tree construction algorithm
 export TREE_METHOD=hist
 ```
 
 This is the same command as for the GPU example, repeated for convenience:
 
-```
+``` bash
 ${SPARK_HOME}/bin/spark-submit                                                  \
  --master yarn                                                                  \
  --deploy-mode ${SPARK_DEPLOY_MODE}                                             \
@@ -185,7 +162,7 @@ ${SPARK_HOME}/bin/spark-submit                                                  
  --driver-memory ${SPARK_DRIVER_MEMORY}                                         \
  --executor-memory ${SPARK_EXECUTOR_MEMORY}                                     \
  --class ${EXAMPLE_CLASS}                                                       \
- ${JAR_EXAMPLE}                                                                 \
+ ${SAMPLE_JAR}                                                                 \
  -dataPath=train::${DATA_PATH}/mortgage/csv/train/mortgage_train_merged.csv       \
  -dataPath=trans::${DATA_PATH}/mortgage/csv/test/mortgage_eval_merged.csv          \
  -format=csv                                                                    \
@@ -212,4 +189,3 @@ In the `stdout` driver log, you should see timings<sup>*</sup> (in seconds), and
 ```
 
 <sup>*</sup> The timings in this Getting Started guide are only illustrative. Please see our [release announcement](https://medium.com/rapids-ai/nvidia-gpus-and-apache-spark-one-step-closer-2d99e37ac8fd) for official benchmarks.
-

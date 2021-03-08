@@ -8,21 +8,31 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
 
 1. Make sure you have [Jupyter notebook installed](https://jupyter.org/install.html). If you install it with conda, please makes sure your Python version is consistent.
 
-2. Make sure you have `SPARK_JARS` and `SPARK_PY_FILES` set properly. Please note, here *cudf-0.17-cuda10-1.jar* is used as an example. Please choose other *cudf-0.17* jars based on your environment. You may need to update these env variables because the working directory will be changed:
-  ```
-  export LIBS_PATH=[full path to xgboost4j_spark/libs]
-  export SPARK_JARS=${LIBS_PATH}/cudf-0.17-cuda10-1.jar,${LIBS_PATH}/xgboost4j_3.0-1.3.0-0.1.0.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.3.0-0.1.0.jar,${LIBS_PATH}/rapids-4-spark_2.12-0.3.0.jar
-  export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.3.0-0.1.0.jar,${LIBS_PATH}/samples.zip
-  ```
+2. Make sure you have below jars.
+
+``` bash
+export CUDF_JAR=cudf-0.18-cuda10.1.jar
+export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
+export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
+export XGBOOST4J_JAR=xgboost4j_3.0-1.3.0-0.1.0.jar
+export XGBOOST4J_SPARK_JAR=xgboost4j-spark_3.0-1.3.0-0.1.0.jar
+```
+
+- *samples.zip* and *main.py*: build the files by following the [guide](/getting-started-guides/building-sample-apps/python.md)
+- Jars: download the following jars:
+    * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/) 
+    * [*xgboost4j-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.3.0-0.1.0/)
+    * [*xgboost4j-spark-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.3.0-0.1.0/)
+    * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
 
 3. Go to the project root directory and launch the notebook:
-  ```
+  ``` bash
   PYSPARK_DRIVER_PYTHON=jupyter       \
   PYSPARK_DRIVER_PYTHON_OPTS=notebook \
   pyspark                             \
   --master ${SPARK_MASTER}            \
-  --jars ${SPARK_JARS}                \
-  --py-files ${SPARK_PY_FILES}           \
+  --jars ${CUDF_JAR},${RAPIDS_JAR},${XGBOOST4J_JAR},${XGBOOST4J_SPARK_JAR}\
+  --py-files ${XGBOOST4J_SPARK_JAR},samples.zip      \
   --conf spark.plugins=com.nvidia.spark.SQLPlugin \
   --conf spark.rapids.memory.gpu.pooling.enabled=false \
   --conf spark.executor.resource.gpu.amount=1 \

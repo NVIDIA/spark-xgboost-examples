@@ -8,7 +8,7 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
 
 1. Make sure you have jupyter notebook installed first.
 2. Build the 'toree' locally to support scala 2.12, and install it.
-  ```
+  ``` bash
   # Clone the source code
   git clone --recursive git@github.com:firestarman/incubator-toree.git -b for-scala-2.12
 
@@ -21,27 +21,43 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
   ```
 
 3. Install a new kernel configured for our example and with gpu enabled:
-  ```
-  export SPARK_EXAMPLES=[full path to spark-examples repo]
-  export RAPIDS_JAR=[full path to rapids plugin jar]
-  export SPARK_JARS=${SPARK_EXAMPLES}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar,${RAPIDS_JAR}
 
-  jupyter toree install                                \
-  --spark_home=${SPARK_HOME}                             \
-  --user                                          \
-  --toree_opts='--nosparkcontext'                         \
-  --kernel_name="XGBoost4j-Spark"                         \
-  --spark_opts='--master ${SPARK_MASTER} --jars ${SPARK_JARS}       \
-    --conf spark.sql.extensions=com.nvidia.spark.rapids.SQLExecPlugin \
-    --conf spark.rapids.memory.gpu.pooling.enabled=false \
-    --conf spark.executor.resource.gpu.amount=1 \
-    --conf spark.task.resource.gpu.amount=1 \
-    --conf spark.executor.resource.gpu.discoveryScript=./getGpusResources.sh \
-    --files $SPARK_HOME/examples/src/main/scripts/getGpusResources.sh'
-  ```
+Make sure you have below jars.
+
+``` bash
+export CUDF_JAR=cudf-0.18-cuda10.1.jar
+export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
+export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
+export XGBOOST4J_JAR=xgboost4j_3.0-1.3.0-0.1.0.jar
+export XGBOOST4J_SPARK_JAR=xgboost4j-spark_3.0-1.3.0-0.1.0.jar
+```
+
+- *samples.zip* and *main.py*: build the files by following the [guide](/getting-started-guides/building-sample-apps/python.md)
+- Jars: download the following jars:
+    * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/) 
+    * [*xgboost4j-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.3.0-0.1.0/)
+    * [*xgboost4j-spark-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.3.0-0.1.0/)
+    * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
+    * 
+
+``` bash
+jupyter toree install                                \
+--spark_home=${SPARK_HOME}                             \
+--user                                          \
+--toree_opts='--nosparkcontext'                         \
+--kernel_name="XGBoost4j-Spark"                         \
+--spark_opts='--master ${SPARK_MASTER} \
+  --jars ${CUDF_JAR},${RAPIDS_JAR},${SAMPLE_JAR}       \
+  --conf spark.sql.extensions=com.nvidia.spark.rapids.SQLExecPlugin \
+  --conf spark.rapids.memory.gpu.pooling.enabled=false \
+  --conf spark.executor.resource.gpu.amount=1 \
+  --conf spark.task.resource.gpu.amount=1 \
+  --conf spark.executor.resource.gpu.discoveryScript=./getGpusResources.sh \
+  --files $SPARK_HOME/examples/src/main/scripts/getGpusResources.sh'
+```
 
 4. Launch the notebook:
-  ```
+  ``` bash
   jupyter notebook
   ```
 

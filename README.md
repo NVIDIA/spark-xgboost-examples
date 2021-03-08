@@ -1,4 +1,4 @@
-This repo provides docs and example applications that demonstrate the RAPIDS.ai GPU-accelerated XGBoost-Spark project. It now supports Spark 3.0.0 and 3.0.1.
+This repo provides docs and example applications that demonstrate the RAPIDS.ai GPU-accelerated XGBoost-Spark project. It now supports Spark 3.0.0+
 
 ### Examples
 
