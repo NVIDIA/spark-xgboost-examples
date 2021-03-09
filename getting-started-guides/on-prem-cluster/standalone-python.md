@@ -4,88 +4,82 @@ This is a getting started guide to XGBoost4J-Spark on an Apache Spark 3.0+ Stand
 
 Prerequisites
 -------------
+
 * Apache Spark 3.0 Standalone Cluster (e.g.: Spark 3.0)
 * Hardware Requirements
   * NVIDIA Pascal™ GPU architecture or better
   * Multi-node clusters with homogenous GPU configuration
 * Software Requirements
   * Ubuntu 16.04/CentOS7
-  * CUDA V10.1/10.2 （CUDA 10.0 is no longer supported）
+  * CUDA V10.1/10.2/11.0 （CUDA 10.0 is no longer supported）
   * NVIDIA driver compatible with your CUDA
   * NCCL 2.7.8
   * Python 2.7/3.4/3.5/3.6/3.7
   * NumPy
 
-* The number of GPUs in each host dictates the number of Spark executors that can run there. Additionally, cores per Spark executor and cores per Spark task must match, such that each executor can run 1 task at any given time. For example, if each host has 4 GPUs, there should be 4 or less executors running on each host, and each executor should run at most 1 task (e.g.: a total of 4 tasks running on 4 GPUs).
-* In Spark Standalone mode, the default configuration is for an executor to take up all the cores assigned to each Spark Worker. In this example, we will limit the number of cores to 1, to match our dataset. Please see https://spark.apache.org/docs/latest/spark-standalone.html for more documentation regarding Standalone configuration.
-* The `SPARK_HOME` environment variable is assumed to point to the cluster's Apache Spark installation.
-* Follow the steps below to enable the GPU discovery for Spark on each host, since Spark3.0 now supports GPU scheduling, and this will let Spark3 find all available GPUs on standalone cluster.
-  1. Copy the spark config file from template
-  ``` bash
-  cd ${SPARK_HOME}/conf/
-  cp spark-defaults.conf.template spark-defaults.conf
-  ```
-  2. Add the following configs to the file `spark-defaults.conf`. The number in first config should NOT larger than the actual number of the GPUs on current host. This example uses 1 as below for one GPU on the host.
-  ```bash
-  spark.worker.resource.gpu.amount 1
-  spark.worker.resource.gpu.discoveryScript ${SPARK_HOME}/examples/src/main/scripts/getGpusResources.sh
-  ```
+The number of GPUs in each host dictates the number of Spark executors that can run there. Additionally, cores per Spark executor and cores per Spark task must match, such that each executor can run 1 task at any given time.
+
+For example, if each host has 4 GPUs, there should be 4 or less executors running on each host, and each executor should run at most 1 task (e.g.: a total of 4 tasks running on 4 GPUs).
+
+In Spark Standalone mode, the default configuration is for an executor to take up all the cores assigned to each Spark Worker. In this example, we will limit the number of cores to 1, to match our dataset. Please see https://spark.apache.org/docs/latest/spark-standalone.html for more documentation regarding Standalone configuration.
+
+We use `SPARK_HOME` environment variable to point to the cluster's Apache Spark cluster. And here are the steps to enable the GPU resources discovery for Spark 3.0+.
+
+1. Copy the spark config file from template
+
+    ``` bash
+    cd ${SPARK_HOME}/conf/
+    cp spark-defaults.conf.template spark-defaults.conf
+    ```
+
+2. Add the following configs to the file `spark-defaults.conf`.
+
+   The number in the first config should **NOT** be larger than the actual number of the GPUs on current host. This example uses 1 as below for one GPU on the host.
+
+    ```bash
+    spark.worker.resource.gpu.amount 1
+    spark.worker.resource.gpu.discoveryScript ${SPARK_HOME}/examples/src/main/scripts/getGpusResources.sh
+    ```
 
 Get Application Files, Jar and Dataset
 -------------------------------
 
-This guide chooses below latest jars as an example.
-
-``` bash
-export CUDF_JAR=cudf-0.18-cuda10.1.jar
-export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
-export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-export XGBOOST4J_JAR=xgboost4j_3.0-1.3.0-0.1.0.jar
-export XGBOOST4J_SPARK_JAR=xgboost4j-spark_3.0-1.3.0-0.1.0.jar
-```
-
-1. *samples.zip* and *main.py*: build the files by following the [guide](/getting-started-guides/building-sample-apps/python.md)
-2. Jars: download the following jars:
-    * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/) 
-    * [*xgboost4j-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.3.0-0.1.0/)
-    * [*xgboost4j-spark-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.3.0-0.1.0/)
-    * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
-3. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data
-
-Place dataset and other files in a local directory. In this example the dataset was unzipped in the `xgboost4j_spark/data` directory, and all other files in the `xgboost4j_spark/libs` directory.
+Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-python.md)
 
 Launch a Standalone Spark Cluster
 ---------------------------------
+
 1. Copy required jars to `$SPARK_HOME/jars` folder
 
-``` bash
-cp ${RAPIDS_JAR} $SPARK_HOME/jars/
-cp ${CUDF_JAR} $SPARK_HOME/jars/
-```
+    ``` bash
+    cp ${RAPIDS_JAR} $SPARK_HOME/jars/
+    cp ${CUDF_JAR} $SPARK_HOME/jars/
+    ```
 
 2. Start the Spark Master process:
 
-``` bash
-${SPARK_HOME}/sbin/start-master.sh
-```
+    ``` bash
+    ${SPARK_HOME}/sbin/start-master.sh
+    ```
 
-Note the hostname or ip address of the Master host, so that it can be given to each Worker process, in this example the Master and Worker will run on the same host.
+    Note the hostname or ip address of the Master host, so that it can be given to each Worker process, in this example the Master and Worker will run on the same host.
 
 3. Start a spark slave process:
 
-``` bash
-export SPARK_MASTER=spark://`hostname -f`:7077
-export SPARK_CORES_PER_WORKER=1
+    ``` bash
+    export SPARK_MASTER=spark://`hostname -f`:7077
+    export SPARK_CORES_PER_WORKER=1
 
-${SPARK_HOME}/sbin/start-slave.sh ${SPARK_MASTER} -c ${SPARK_CORES_PER_WORKER}
-```
+    ${SPARK_HOME}/sbin/start-slave.sh ${SPARK_MASTER} -c ${SPARK_CORES_PER_WORKER}
+    ```
 
-Note that in this example the Master and Worker processes are both running on the same host. This is not a requirement, as long as all hosts that are used to run the Spark app have access to the dataset.
+    Note that in this example the Master and Worker processes are both running on the same host. This is not a requirement, as long as all hosts that are used to run the Spark app have access to the dataset.
 
 Launch Mortgage ETL Example
 ---------------------------
 
 Run spark-submit
+
 ``` bash
 ${SPARK_HOME}/bin/spark-submit \
     --master spark://$HOSTNAME:7077 \
@@ -93,33 +87,28 @@ ${SPARK_HOME}/bin/spark-submit \
     --conf spark.executor.resource.gpu.amount=1 \
     --conf spark.task.resource.gpu.amount=1 \
     --conf spark.plugins=com.nvidia.spark.SQLPlugin \
-    --py-files samples.zip \
+    --py-files ${SAMPLE_ZIP} \
     main.py \
     --mainClass='com.nvidia.spark.examples.mortgage.etl_main' \
     --format=csv \
-    --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-train/" \
-    --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-train/" \
-    --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/train/"
+    --dataPath="perf::${SPARK_XGBOOST_DIR}/mortgage/perf-train/" \
+    --dataPath="acq::${SPARK_XGBOOST_DIR}/mortgage/acq-train/" \
+    --dataPath="out::${SPARK_XGBOOST_DIR}/mortgage/out/train/"
 
 # if generating eval data, change the data path to eval as well as the corresponding perf-eval and acq-eval data
-# --dataPath="perf::/home/xgboost4j_spark/data/mortgage/perf-eval"
-# --dataPath="acq::/home/xgboost4j_spark/data/mortgage/acq-eval"
-# --dataPath="out::/home/xgboost4j_spark/data/mortgage/out/eval/"
+# --dataPath="perf::${SPARK_XGBOOST_DIR}/mortgage/perf-eval"
+# --dataPath="acq::${SPARK_XGBOOST_DIR}/mortgage/acq-eval"
+# --dataPath="out::${SPARK_XGBOOST_DIR}/mortgage/out/eval/"
 ```
 
 Launch GPU Mortgage Example
 ---------------------------
+
 Variables required to run spark-submit command:
 
 ``` bash
 # this is the same master host we defined while launching the cluster
 export SPARK_MASTER=spark://`hostname -f`:7077
-
-# location where data was downloaded
-export DATA_PATH=./xgboost4j_spark/data
-
-# location for the required libs
-export LIBS_PATH=./xgboost4j_spark/libs
 
 # Currently the number of tasks and executors must match the number of input files.
 # For this example, we will set these such that we have 1 executor, with 1 core per executor
@@ -140,9 +129,6 @@ export SPARK_DRIVER_MEMORY=4g
 # spark executor memory
 export SPARK_EXECUTOR_MEMORY=8g
 
-# python entrypoint
-export SPARK_PYTHON_ENTRYPOINT=${LIBS_PATH}/main.py
-
 # example class to use
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.gpu_main
 
@@ -162,13 +148,12 @@ ${SPARK_HOME}/bin/spark-submit                                                  
  --driver-memory ${SPARK_DRIVER_MEMORY}                                         \
  --executor-memory ${SPARK_EXECUTOR_MEMORY}                                     \
  --conf spark.cores.max=${TOTAL_CORES}                                          \
- --conf spark.executor.extraClassPath=${CUDF_JAR}:${RAPIDS_JAR}  \
  --jars ${CUDF_JAR},${RAPIDS_JAR},${XGBOOST4J_JAR},${XGBOOST4J_SPARK_JAR}     \
- --py-files ${XGBOOST4J_SPARK_JAR},samples.zip                   \
- ${SPARK_PYTHON_ENTRYPOINT}                                                     \
+ --py-files ${XGBOOST4J_SPARK_JAR},${SAMPLE_ZIP}                   \
+ ${MAIN_PY}                                                     \
  --mainClass=${EXAMPLE_CLASS}                                                   \
- --dataPath=train::${DATA_PATH}/mortgage/out/train/      \
- --dataPath=trans::${DATA_PATH}/mortgage/out/eval/      \
+ --dataPath=train::${SPARK_XGBOOST_DIR}/mortgage/out/train/      \
+ --dataPath=trans::${SPARK_XGBOOST_DIR}/mortgage/out/eval/      \
  --format=parquet                                 \
  --numWorkers=${SPARK_NUM_EXECUTORS}                                            \
  --treeMethod=${TREE_METHOD}                                                    \
@@ -194,27 +179,12 @@ Accuracy is 0.9873692247091792
 
 Launch CPU Mortgage Example
 ---------------------------
+
 If you are running this example after running the GPU example above, please set these variables, to set both training and testing to run on the CPU exclusively:
-
-``` bash
-# example class to use
-export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.cpu_main
-
-# tree construction algorithm
-export TREE_METHOD=hist
-```
-
-This is the full variable listing, if you are running the CPU example from scratch:
 
 ``` bash
 # this is the same master host we defined while launching the cluster
 export SPARK_MASTER=spark://`hostname -f`:7077
-
-# location where data was downloaded
-export DATA_PATH=./xgboost4j_spark/data
-
-# location for the required libs
-export LIBS_PATH=./xgboost4j_spark/libs
 
 # Currently the number of tasks and executors must match the number of input files.
 # For this example, we will set these such that we have 1 executor, with 1 core per executor
@@ -235,17 +205,8 @@ export SPARK_DRIVER_MEMORY=4g
 # spark executor memory
 export SPARK_EXECUTOR_MEMORY=8g
 
-# python entrypoint
-export SPARK_PYTHON_ENTRYPOINT=${LIBS_PATH}/main.py
-
 # example class to use
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.cpu_main
-
-# additional jars for XGBoost4J example
-export SPARK_JARS=${LIBS_PATH}/cudf-0.15-cuda10-2.jar,${LIBS_PATH}/xgboost4j_3.0-1.3.0-0.1.0.jar,${LIBS_PATH}/xgboost4j-spark_3.0-1.3.0-0.1.0.jar
-
-# additional Python files for XGBoost4J example
-export SPARK_PY_FILES=${LIBS_PATH}/xgboost4j-spark_3.0-1.3.0-0.1.0.jar,${LIBS_PATH}/samples.zip
 
 # tree construction algorithm
 export TREE_METHOD=hist
@@ -259,8 +220,8 @@ ${SPARK_HOME}/bin/spark-submit                                                  
  --driver-memory ${SPARK_DRIVER_MEMORY}                                         \
  --executor-memory ${SPARK_EXECUTOR_MEMORY}                                     \
  --conf spark.cores.max=${TOTAL_CORES}                                          \
- --jars ${CUDF_JAR},${RAPIDS_JAR},${XGBOOST4J_JAR},${XGBOOST4J_SPARK_JAR}       \
- --py-files ${XGBOOST4J_SPARK_JAR},samples.zip                        \
+ --jars ${XGBOOST4J_JAR},${XGBOOST4J_SPARK_JAR}       \
+ --py-files ${XGBOOST4J_SPARK_JAR},${SAMPLE_ZIP}                       \
  ${SPARK_PYTHON_ENTRYPOINT}                                                     \
  --mainClass=${EXAMPLE_CLASS}                                                   \
  --dataPath=train::${DATA_PATH}/mortgage/out/train/      \

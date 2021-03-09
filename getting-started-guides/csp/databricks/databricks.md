@@ -1,9 +1,11 @@
 Get Started with XGBoost4J-Spark on Databricks
 ======================================================
+
 This is a getting started guide to XGBoost4J-Spark on Databricks. At the end of this guide, the reader will be able to run a sample Apache Spark application that runs on NVIDIA GPUs on Databricks.
 
 Prerequisites
 -------------
+
 * Apache Spark 3.0+ running in DataBricks Runtime 7.0 ML with GPU.  Make sure it matches the hardware and software requirements below.
 * Hardware Requirements
   * NVIDIA Pascal™ GPU architecture or better
@@ -18,6 +20,7 @@ The number of GPUs per node dictates the number of Spark executors that can run 
 
 Start A Databricks Cluster
 --------------------------
+
 Create a Databricks cluster (`Clusters` -> `+ Create Cluster`) that meets the above prerequisites.
 
 1. Make sure to use the 7.0 ML with GPU Databricks runtime.
@@ -26,14 +29,13 @@ Create a Databricks cluster (`Clusters` -> `+ Create Cluster`) that meets the ab
 4. Choose the number of workers that matches the number of GPUs you want to use.
 5. Select a worker type that has 1 GPU for the worker like p3.xlarge or NC6s_v3, for example.
 
-
 After you start a Databricks cluster, use the initialization notebooks -- [7.0 notebook](/getting-started-guides/csp/databricks/init-notebook-for-rapids-spark-xgboost-on-databricks-gpu-7.0-ml.ipynb
 ) to setup execution.
 
 The initialization notebooks will perform the following steps:
 
 1. Downloading the CUDA, Rapids-4-spark and Rapids XGBoost4j Spark jars
-    * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/) 
+    * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/)
     * [*xgboost4j-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.3.0-0.1.0/)
     * [*xgboost4j-spark-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.3.0-0.1.0/)
     * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
@@ -50,10 +52,10 @@ Add cluster initialization script and Spark Configs
 2. Edit your cluster, adding an initialization script from dbfs:/databricks/init_scripts/init.sh in the "Advanced Options" under "Init Scripts" tab
 3. Now select the “Spark” tab, and paste the following config options into the Spark Config section. Change the config values based on the workers you choose.
 
-``` bash
+    ``` bash
     spark.plugins com.nvidia.spark.SQLPlugin
     spark.rapids.memory.gpu.pooling.enabled false
-```
+    ```
 
 4. Reboot the cluster
 

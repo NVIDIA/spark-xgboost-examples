@@ -1,4 +1,5 @@
 # Get Started with XGBoost4J-Spark 3.0 on AWS EC2
+
 This is a getting started guide to Spark 3.0 on AWS EC2. At the end of this guide, the reader will be able to run a sample Apache Spark application that runs on NVIDIA GPUs on AWS EC2.
 
 For more details of AWS EC2 and get started, please check the [AWS document](https://aws.amazon.com/ec2/getting-started/).
@@ -129,29 +130,21 @@ $SPARK_HOME/sbin/start-slave.sh <master-spark-URL>
 
 ### Step 1: Download Jars
 
-This guide chooses below latest jars as an example.
-
-``` bash
-export CUDF_JAR=cudf-0.18-cuda10.1.jar
-export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
-export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-export XGBOOST4J_JAR=xgboost4j_3.0-1.3.0-0.1.0.jar
-export XGBOOST4J_SPARK_JAR=xgboost4j-spark_3.0-1.3.0-0.1.0.jar
-```
-
-1. Jars: download the following jars:
-    * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/)
-    * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
-2. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data
+Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-scala.md)
 
 Copy cudf and rapids jars to `$SPARK_HOME/jars`
 
+``` bash
+cp $CUDF_JAR $SPARK_HOME/jars/
+cp $RAPIDS_JAR $SPARK_HOME/jars/
+```
+
 ### Step 2: Create sample running script
+
 Create running run.sh script with below content, make sure change the paths in it to your own. Also your aws key/secret.
 
 ``` bash
 #!/bin/bash
-
 export SPARK_HOME=/your/path/to/spark-3.0.0-bin-hadoop3.2
 
 export PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH
@@ -163,10 +156,6 @@ export NUM_EXECUTOR_CORES=$((${TOTAL_CORES}/${NUM_EXECUTORS}))
 export S3A_CREDS_USR=your_aws_key
 
 export S3A_CREDS_PSW=your_aws_secret
-
-export JAR_PATH=/your/path/to/jars
-
-export JARS=$JAR_PATH/xgboost4j-spark_3.0-1.3.0-0.1.0.jar,$JAR_PATH/xgboost4j_3.0-1.3.0-0.1.0.jar
 
 spark-submit --master spark://$HOSTNAME:7077 \
         --deploy-mode client \

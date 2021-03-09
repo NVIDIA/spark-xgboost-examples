@@ -1,50 +1,42 @@
 Get Started with XGBoost4J-Spark on Apache Hadoop YARN
 ======================================================
+
 This is a getting started guide to XGBoost4J-Spark on Apache Hadoop YARN supporting GPU scheduling. At the end of this guide, the reader will be able to run a sample Apache Spark application that runs on NVIDIA GPUs.
 
 Prerequisites
 -------------
+
 * Apache Spark 3.0+ running on YARN supporting GPU scheduling. (e.g.: Spark 3.0, Hadoop-Yarn 3.1.0)
 * Hardware Requirements
   * NVIDIA Pascal™ GPU architecture or better
   * Multi-node clusters with homogenous GPU configuration
 * Software Requirements
   * Ubuntu 16.04/CentOS7
-  * CUDA V10.1/10.2   （CUDA 10.0 is no longer supported）
+  * CUDA V10.1/10.2/11.0   （CUDA 10.0 is no longer supported）
   * NVIDIA driver compatible with your CUDA
   * NCCL 2.7.8
 
-* The number of GPUs per NodeManager dictates the number of Spark executors that can run in that NodeManager. Additionally, cores per Spark executor and cores per Spark task must match, such that each executor can run 1 task at any given time. For example: if each NodeManager has 4 GPUs, there should be 4 or less executors running on each NodeManager, and each executor should run 1 task (e.g.: A total of 4 tasks running on 4 GPUs). In order to achieve this, you may need to adjust `spark.task.cpus` and `spark.executor.cores` to match (both set to 1 by default). Additionally, we recommend adjusting `executor-memory` to divide host memory evenly amongst the number of GPUs in each NodeManager, such that Spark will schedule as many executors as there are GPUs in each NodeManager.
-* The `SPARK_HOME` environment variable is assumed to point to the cluster's Apache Spark installation.
-* Enable GPU scheduling and isolation in Hadoop Yarn on each host. Please refe to [here](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html) for more details.
+The number of GPUs per NodeManager dictates the number of Spark executors that can run in that NodeManager. Additionally, cores per Spark executor and cores per Spark task must match, such that each executor can run 1 task at any given time.
+
+For example: if each NodeManager has 4 GPUs, there should be 4 or less executors running on each NodeManager, and each executor should run 1 task (e.g.: A total of 4 tasks running on 4 GPUs). In order to achieve this, you may need to adjust `spark.task.cpus` and `spark.executor.cores` to match (both set to 1 by default). Additionally, we recommend adjusting `executor-memory` to divide host memory evenly amongst the number of GPUs in each NodeManager, such that Spark will schedule as many executors as there are GPUs in each NodeManager.
+
+We use `SPARK_HOME` to point to the cluster's Apache Spark installation. And as to how to enable GPU scheduling and isolation for Yarn, please refer to [here](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html).
 
 Get Jars and Dataset
 -------------------------------
 
-This guide chooses below latest jars as an example.
-
-``` bash
-export CUDF_JAR=cudf-0.18-cuda10.1.jar
-export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
-export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-```
-
-1. Application Jar: building the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
-2. Rapids Plugin Jar: [*rapaids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
-3. Cudf jar: [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/)
-4. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
-
-Place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory.
+Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-scala.md)
 
 Create a directory in HDFS, and copy:
 
 ``` bash
 [xgboost4j_spark]$ hadoop fs -mkdir /tmp/xgboost4j_spark
-[xgboost4j_spark]$ hadoop fs -copyFromLocal * /tmp/xgboost4j_spark
+[xgboost4j_spark]$ hadoop fs -copyFromLocal ${SPARK_XGBOOST_DIR}/mortgage/* /tmp/xgboost4j_spark
 ```
 
 Launch GPU Mortgage Example
 ---------------------------
+
 Variables required to run spark-submit command:
 
 ``` bash
@@ -116,17 +108,8 @@ In the `stdout` driver log, you should see timings<sup>*</sup> (in seconds), and
 
 Launch CPU Mortgage Example
 ---------------------------
+
 If you are running this example after running the GPU example above, please set these variables, to set both training and testing to run on the CPU exclusively:
-
-```bash
-# example class to use
-export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.CPUMain
-
-# tree construction algorithm
-export TREE_METHOD=hist
-```
-
-This is the full variable listing, if you are running the CPU example from scratch:
 
 ``` bash
 # location where data was downloaded 

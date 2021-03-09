@@ -4,22 +4,24 @@ This is a getting started guide to deploy XGBoost4J-Spark package on a Kubernete
 
 Prerequisites
 -------------
+
 * Apache Spark 3.0+  (e.g.: Spark 3.0)
 * Hardware Requirements
-    * NVIDIA Pascal™ GPU architecture or better
-    * Multi-node clusters with homogenous GPU configuration
+  * NVIDIA Pascal™ GPU architecture or better
+  * Multi-node clusters with homogenous GPU configuration
 * Software Requirements
-    * Ubuntu 16.04/CentOS7
-    * CUDA V10.1/10.2/11.0  （CUDA 10.0 is no longer supported）
-    * NVIDIA driver compatible with your CUDA
-    * NCCL 2.7.8
+  * Ubuntu 16.04/CentOS7
+  * CUDA V10.1/10.2/11.0  （CUDA 10.0 is no longer supported）
+  * NVIDIA driver compatible with your CUDA
+  * NCCL 2.7.8
 * [Kubernetes 1.6+ cluster with NVIDIA GPUs](https://docs.nvidia.com/datacenter/kubernetes/index.html)
-    * See official [Spark on Kubernetes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) instructions for detailed spark-specific cluster requirements
+  * See official [Spark on Kubernetes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) instructions for detailed spark-specific cluster requirements
 * kubectl installed and configured in the job submission environment
-    * Required for managing jobs and retrieving logs
+  * Required for managing jobs and retrieving logs
 
 Build a GPU Spark Docker Image
 ------------------------------
+
 Build a GPU Docker image with Spark resources in it, this Docker image must be accessible by each node in the Kubernetes cluster.
 
 1. Locate your Spark installations. If you don't have one, you can [download](https://spark.apache.org/downloads.html) from Apache and unzip it.
@@ -47,27 +49,13 @@ popd
 Get Jars and Dataset
 -------------------------------
 
-This guide chooses below latest jars as an example.
-
-``` bash
-export CUDF_JAR=cudf-0.18-cuda10.1.jar
-export RAPIDS_JAR=rapids-4-spark_2.12-0.4.0.jar
-export SAMPLE_JAR=sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-export XGBOOST4J_JAR=xgboost4j_3.0-1.3.0-0.1.0.jar
-export XGBOOST4J_SPARK_JAR=xgboost4j-spark_3.0-1.3.0-0.1.0.jar
-```
-
-1. Application Jar: Please build the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
-2. Rapids Plugin Jar: [*rapaids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
-3. Cudf jar: [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18/)
-4. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
-
-Place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory.
+Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-scala.md)
 
 Make sure that data and jars are accessible by each node of the Kubernetes cluster via [Kubernetes volumes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#using-kubernetes-volumes), on cluster filesystems like HDFS, or in [object stores like S3 and GCS](https://spark.apache.org/docs/2.3.0/cloud-integration.html). Note that using [application dependencies](https://spark.apache.org/docs/latest/running-on-kubernetes.html#dependency-management) from the submission client’s local file system is currently not yet supported.
 
 Save Kubernetes Template Resources
 ----------------------------------
+
 When using Spark on Kubernetes the driver and executor pods can be launched with pod templates. In the XGBoost4J-Spark use case, these template yaml files are used to allocate and isolate specific GPUs to each pod. The following is a barebones template file to allocate 1 GPU per pod.
 
 ```
@@ -85,6 +73,7 @@ This 1 GPU template file should be sufficient for all XGBoost jobs because each 
 
 Launch GPU Mortgage Example
 ---------------------------
+
 Variables required to run spark-submit command:
 
 ``` bash
