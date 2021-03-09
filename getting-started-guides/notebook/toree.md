@@ -24,7 +24,7 @@ It is assumed that the `SPARK_MASTER` and `SPARK_HOME` environment variables are
 
 3. Prepare packages and dataset.
 
-    Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-python.md)
+    Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-scala.md)
 
 4. Install a new kernel with gpu enabled and lunch
 

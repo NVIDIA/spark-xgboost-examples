@@ -16,25 +16,25 @@ Click "Launch instance" at the EC2 Management Console, and select "Launch instan
 
 ### Step 2:  Configure Instance
 
-- Choose an Amazon Machine Image(AMI)
+#### Step 2.1: Choose an Amazon Machine Image(AMI)
 
 Search for "deep learning base ami", choose "Deep Learning Base AMI (Ubuntu 18.04)". Click "Select".
 
 ![Step 2.1: Choose an Amazon Machine Image(AMI)](pics/ec2_step2-1.png)
 
-### Step 2.2: Choose an Instance Type
+#### Step 2.2: Choose an Instance Type
 
 Choose type "p3.2xlarge". Click "Next: Configure Instance Details" at right buttom.
 
 ![Step 2.1: Choose an Instance Type](pics/ec2_step2-2.png)
 
-### Step 2.3: Configure Instance Detials
+#### Step 2.3: Configure Instance Detials
 
 Do not need to change anything here, make sure "Number of instances" is 1. Click "Next: Add Storage" at right buttom.
 
 ![Step 2.3: Configure Instance Detials](pics/ec2_step2-3.png)
 
-### Step 2.4: Add Storage
+#### Step 2.4: Add Storage
 
 Change the root disk size based on your needed, also you can add ebs volume by clicking "Add New Volume". In this sample, we use default 50G. Click "Next: Add Tag" at right buttom.
 
@@ -42,11 +42,11 @@ For more details of AWS EBS please check the [AWS document](https://docs.aws.ama
 
 ![Step 2.4: Add Storage](pics/ec2_step2-4.png)
 
-### Step 2.5: Add Tags
+#### Step 2.5: Add Tags
 
 You can add tag here or skip. In this sample, we will skip it. Click "Next: Configure Security Group" at right buttom.
 
-### Step 2.6: Configure Security Group
+#### Step 2.6: Configure Security Group
 
 For convenience, in this sample, we open all ports. You can add your own rules.
 
@@ -56,7 +56,7 @@ For more details of security group, please check the [AWS document](https://docs
 
 ![Step 2.6: Configure Security Group](pics/ec2_step2-6.png)
 
-### Step 2.7: Review Instance Launch
+#### Step 2.7: Review Instance Launch
 
 Review your configuration. Click "Launch" at right buttom. Choose the key-pair you have and launch instances.
 

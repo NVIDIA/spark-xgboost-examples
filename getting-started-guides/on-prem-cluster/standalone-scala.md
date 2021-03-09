@@ -1,7 +1,7 @@
 Get Started with XGBoost4J-Spark on an Apache Spark Standalone Cluster
 ======================================================================
 
-This is a getting-started guide to XGBoost on an Apache Spark 3.0+ Standalone Cluster. At the end of this guide, the user can be able to run a sample Apache Spark application that runs on NVIDIA GPUs.
+This is a getting-started guide to XGBoost on an Apache Spark 3.0+ Standalone Cluster. At the end of this guide, the user can run a sample Apache Spark application that runs on NVIDIA GPUs.
 
 Prerequisites
 -------------
