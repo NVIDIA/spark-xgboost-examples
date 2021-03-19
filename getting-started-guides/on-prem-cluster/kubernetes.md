@@ -4,23 +4,24 @@ This is a getting started guide to deploy XGBoost4J-Spark package on a Kubernete
 
 Prerequisites
 -------------
+
 * Apache Spark 3.0+  (e.g.: Spark 3.0)
 * Hardware Requirements
-    * NVIDIA Pascal™ GPU architecture or better
-    * Multi-node clusters with homogenous GPU configuration
+  * NVIDIA Pascal™ GPU architecture or better
+  * Multi-node clusters with homogenous GPU configuration
 * Software Requirements
-    * Ubuntu 16.04/CentOS7
-    * CUDA V10.1/10.2  （CUDA 10.0 is no longer supported）
-    * NVIDIA driver compatible with your CUDA
-    * NCCL 2.4.7
+  * Ubuntu 16.04/CentOS7
+  * CUDA V10.1/10.2/11.0  （CUDA 10.0 is no longer supported）
+  * NVIDIA driver compatible with your CUDA
+  * NCCL 2.7.8
 * [Kubernetes 1.6+ cluster with NVIDIA GPUs](https://docs.nvidia.com/datacenter/kubernetes/index.html)
-    * See official [Spark on Kubernetes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) instructions for detailed spark-specific cluster requirements
+  * See official [Spark on Kubernetes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#prerequisites) instructions for detailed spark-specific cluster requirements
 * kubectl installed and configured in the job submission environment
-    * Required for managing jobs and retrieving logs
-
+  * Required for managing jobs and retrieving logs
 
 Build a GPU Spark Docker Image
 ------------------------------
+
 Build a GPU Docker image with Spark resources in it, this Docker image must be accessible by each node in the Kubernetes cluster.
 
 1. Locate your Spark installations. If you don't have one, you can [download](https://spark.apache.org/downloads.html) from Apache and unzip it.
@@ -30,8 +31,7 @@ Build a GPU Docker image with Spark resources in it, this Docker image must be a
     * Most public cloud file systems are not natively supported -- pulling data and jar files from S3, GCS, etc. require installing additional libraries
 5. Build and push the docker image
 
-
-```
+``` bash
 export SPARK_HOME=<path to spark>
 export SPARK_DOCKER_IMAGE=<gpu spark docker image repo and name>
 export SPARK_DOCKER_TAG=<spark docker image tag>
@@ -46,29 +46,16 @@ docker push ${SPARK_DOCKER_IMAGE}:${SPARK_DOCKER_TAG}
 popd
 ```
 
-
 Get Jars and Dataset
 -------------------------------
-#### Please contact [contributors](https://github.com/NVIDIA/spark-xgboost-examples/graphs/contributors) for these jars now, since they have not been released yet.
-1. Application Jar: Please build the sample_xgboost_apps jar with dependencies as specified in the [guide](/getting-started-guides/building-sample-apps/scala.md)
-2. Rapids Plugin Jar: You can download it from [*rapids-4-spark_2.12-0.3.0.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.3.0/)
-3. Dataset: https://rapidsai.github.io/demos/datasets/mortgage-data (The dataset needs to run with ETL first.)
-Place the required jar and dataset in a local directory. In this example the jar is in the `xgboost4j_spark/jars` directory, and the `mortgage.zip` dataset was unzipped in the `xgboost4j_spark/data` directory. 
 
-
-```
-[xgboost4j_spark]$ find . -type f -print|sort
-./data/mortgage/csv/test/mortgage_eval_merged.csv
-./data/mortgage/csv/train/mortgage_train_merged.csv
-./jars/rapids-4-spark_2.12-0.3.0.jar
-./jars/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-```
+Make sure you have prepared the necessary packages and dataset by following this [guide](/getting-started-guides/prepare-package-data/preparation-scala.md)
 
 Make sure that data and jars are accessible by each node of the Kubernetes cluster via [Kubernetes volumes](https://spark.apache.org/docs/latest/running-on-kubernetes.html#using-kubernetes-volumes), on cluster filesystems like HDFS, or in [object stores like S3 and GCS](https://spark.apache.org/docs/2.3.0/cloud-integration.html). Note that using [application dependencies](https://spark.apache.org/docs/latest/running-on-kubernetes.html#dependency-management) from the submission client’s local file system is currently not yet supported.
 
-
 Save Kubernetes Template Resources
 ----------------------------------
+
 When using Spark on Kubernetes the driver and executor pods can be launched with pod templates. In the XGBoost4J-Spark use case, these template yaml files are used to allocate and isolate specific GPUs to each pod. The following is a barebones template file to allocate 1 GPU per pod.
 
 ```
@@ -84,19 +71,16 @@ spec:
 
 This 1 GPU template file should be sufficient for all XGBoost jobs because each executor should only run 1 task on a single GPU. Save this yaml file to the local environment of the machine you are submitting jobs from, you will need to provide a path to it as an argument in your spark-submit command. Without the template file a pod will see every GPU on the cluster node it is allocated on and can attempt to execute using a GPU that is already in use -- causing undefined behavior and errors.
 
-
 Launch GPU Mortgage Example
 ---------------------------
+
 Variables required to run spark-submit command:
 
-```
+``` bash
 # Variables dependent on how data was made accessible to each node
 # Make sure to include relevant spark-submit configuration arguments
 # location where data was saved
 export DATA_PATH=<path to data directory> 
-
-# location where the required jar was saved
-export JARS_PATH=<path to jars directory>
 
 # Variables independent of how data was made accessible to each node
 # kubernetes master URL, used as the spark master for job submission
@@ -128,20 +112,13 @@ export SPARK_EXECUTOR_MEMORY=8g
 # example class to use
 export EXAMPLE_CLASS=com.nvidia.spark.examples.mortgage.GPUMain
 
-# XGBoost4J example jar
-export JAR_EXAMPLE=${JARS_PATH}/sample_xgboost_apps-0.2.2-jar-with-dependencies.jar
-
-# Rapids plugin jar, working as the sql plugin on Spark3.0
-export JAR_RAPIDS=${JARS_PATH}/rapids-4-spark_2.12-0.3.0.jar
-
 # tree construction algorithm
 export TREE_METHOD=gpu_hist
 ```
 
-
 Run spark-submit:
 
-```
+``` bash
 ${SPARK_HOME}/bin/spark-submit                                                          \
   --conf spark.plugins=com.nvidia.spark.SQLPlugin \
   --conf spark.rapids.memory.gpu.pooling.enabled=false \
@@ -149,7 +126,7 @@ ${SPARK_HOME}/bin/spark-submit                                                  
   --conf spark.task.resource.gpu.amount=1 \
   --conf spark.executor.resource.gpu.discoveryScript=./getGpusResources.sh \
   --files $SPARK_HOME/examples/src/main/scripts/getGpusResources.sh \
-  --jars ${JAR_RAPIDS}                               \
+  --jars ${CUDF_JAR},${RAPIDS_JAR}                           \
   --master ${SPARK_MASTER}                                                              \
   --deploy-mode ${SPARK_DEPLOY_MODE}                                                    \
   --class ${EXAMPLE_CLASS}                                                              \
@@ -159,7 +136,7 @@ ${SPARK_HOME}/bin/spark-submit                                                  
   --conf spark.kubernetes.driver.podTemplateFile=${TEMPLATE_PATH}                       \
   --conf spark.kubernetes.executor.podTemplateFile=${TEMPLATE_PATH}                     \
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark                  \
-  ${JAR_EXAMPLE}                                                                        \
+  ${SAMPLE_JAR}                                                                        \
   -dataPath=train::${DATA_PATH}/mortgage/csv/train/mortgage_train_merged.csv              \
   -dataPath=trans::${DATA_PATH}/mortgage/csv/test/mortgage_eval_merged.csv                 \
   -format=csv                                                                           \
@@ -193,4 +170,3 @@ In the driver log, you should see timings* (in seconds), and the accuracy metric
 \* Kubernetes logs may not be nicely formatted since `stdout` and `stderr` are not kept separately
 
 \* The timings in this Getting Started guide are only illustrative. Please see our [release announcement](https://medium.com/rapids-ai/nvidia-gpus-and-apache-spark-one-step-closer-2d99e37ac8fd) for official benchmarks.
-
