@@ -38,7 +38,7 @@ The initialization notebooks will perform the following steps:
     * [*cudf-latest.jar*](https://repo1.maven.org/maven2/ai/rapids/cudf/0.18.1/)
     * [*xgboost4j-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j_3.0/1.3.0-0.1.0/)
     * [*xgboost4j-spark-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/xgboost4j-spark_3.0/1.3.0-0.1.0/)
-    * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.0/)
+    * [*rapids-latest.jar*](https://repo1.maven.org/maven2/com/nvidia/rapids-4-spark_2.12/0.4.1/)
 2. Creating a new directory for initialization script in Databricks file system (DBFS)
 3. Creating an initialization script inside the new directory to copy jars inside Databricks jar directory
 4. Download and decompress the Sample Mortgage Notebook dataset
