@@ -91,8 +91,8 @@ ${SPARK_HOME}/bin/spark-submit \
     --conf spark.executor.resource.gpu.amount=1 \
     --conf spark.task.resource.gpu.amount=1 \
     --conf spark.plugins=com.nvidia.spark.SQLPlugin \
+    --class com.nvidia.spark.examples.mortgage.ETLMain  \
     $SAMPLE_JAR \
-    --class com.nvidia.spark.examples.Mortgage.ETLMain  \
     -format=csv \
     -dataPath="perf::${SPARK_XGBOOST_DIR}/mortgage/perf-train/" \
     -dataPath="acq::${SPARK_XGBOOST_DIR}/mortgage/acq-train/" \
