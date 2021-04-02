@@ -39,6 +39,9 @@ These examples use default parameters for demo purposes. For a full list please 
 ## Troubleshooting
 - [Trouble Shooting](/trouble-shooting/trouble-shooting.md)
 
+## Contributing
+See the [Contributing guide](CONTRIBUTING.md).
+
 ## Contact Us
 
 Please see the [RAPIDS](https://rapids.ai/community.html) website for contact information.
