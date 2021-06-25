@@ -9,7 +9,7 @@ For simplicity export the location to these jars. All examples assume the packag
   
    Then download the version of the cudf jar that your version of the accelerator depends on.
 
-     * [cuDF 11.0/11.1/11.2 Package](https://repo1.maven.org/maven2/ai/rapids/cudf/21.06.1/cudf-21.06.1-cuda11.jar)
+     * [cuDF 11.0 Package](https://repo1.maven.org/maven2/ai/rapids/cudf/21.06.1/cudf-21.06.1-cuda11.jar)
 
 ### Build XGBoost Scala Examples
 
